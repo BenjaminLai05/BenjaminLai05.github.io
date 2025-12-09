@@ -130,7 +130,7 @@ p {
    4. LAYOUT
    ================================ */
 
-/* Outer Container - matches Framer's main container */
+/* Outer Container */
 .outer-container {
     width: 1320px;
     margin: 0 auto;
@@ -144,7 +144,7 @@ p {
     background-color: var(--color-bg);
 }
 
-/* Page Content Container - matches Framer's content width */
+/* Page Content Container */
 .page-content {
     width: 770px;
     padding: 110px 0;
@@ -168,7 +168,7 @@ p {
     margin-bottom: var(--gap-xlarge);
 }
 
-/* Top Content Section - matches Framer's content & socials width (420px on desktop) */
+/* Top Content Section */
 .top-content {
     width: 462px;
     display: flex;

@@ -1,0 +1,374 @@
+/* Preview Styles (Collapsed State) */
+.patient-info-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.patient-info-preview .preview-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.patient-info-preview .preview-icon {
+  width: 20px;
+  height: 20px;
+  color: rgba(100, 181, 246, 0.9);
+  flex-shrink: 0;
+}
+
+.patient-info-preview .preview-title-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.patient-info-preview .preview-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.2px;
+}
+
+.patient-info-preview .preview-subtitle {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.patient-info-preview .preview-risk-badge {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.patient-info-preview .preview-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+.patient-info-preview .preview-info-message {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.patient-info-preview .info-message-icon {
+  width: 32px;
+  height: 32px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 4px;
+}
+
+.patient-info-preview .info-message-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.3px;
+}
+
+.patient-info-preview .info-message-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+  max-width: 200px;
+}
+
+.patient-info-preview .preview-details {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.patient-info-preview .preview-detail-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.patient-info-preview .detail-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.patient-info-preview .detail-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Inter', sans-serif;
+}
+
+.patient-info-preview .detail-value.risk-badge--low-moderate {
+  color: rgba(34, 197, 94, 0.9);
+}
+
+.patient-info-preview .detail-value.risk-badge--moderate-high {
+  color: rgba(251, 191, 36, 0.9);
+}
+
+.patient-info-preview .detail-value.risk-badge--high {
+  color: rgba(239, 68, 68, 0.9);
+}
+
+.patient-info-preview .detail-value.risk-badge--very-high {
+  color: rgba(239, 68, 68, 1);
+}
+
+.patient-info-preview .detail-value.risk-badge--very-high-active-disease {
+  color: rgba(239, 68, 68, 1);
+}
+
+/* Full Expanded Styles */
+.patient-info {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
+  overflow-y: auto;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Empty State */
+.patient-info-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px;
+}
+
+.empty-state-icon {
+  width: 48px;
+  height: 48px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+}
+
+.empty-state-text {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+
+/* Header Section */
+.patient-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.patient-name-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.patient-name {
+  font-size: 22px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+.patient-age-gender {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Risk Badge */
+.risk-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  min-width: 100px;
+}
+
+.risk-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.risk-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  text-align: center;
+}
+
+/* Risk level colors */
+.risk-badge--low-moderate .risk-value {
+  color: rgba(34, 197, 94, 0.9);
+}
+
+.risk-badge--moderate-high .risk-value {
+  color: rgba(251, 191, 36, 0.9);
+}
+
+.risk-badge--high .risk-value {
+  color: rgba(239, 68, 68, 0.9);
+}
+
+.risk-badge--very-high .risk-value {
+  color: rgba(239, 68, 68, 1);
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+}
+
+.risk-badge--very-high-active-disease .risk-value {
+  color: rgba(239, 68, 68, 1);
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+  animation: pulse-risk 2s ease-in-out infinite;
+}
+
+@keyframes pulse-risk {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Narrative Content */
+.patient-narrative {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+}
+
+.narrative-text {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.narrative-paragraph {
+  font-size: 13px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 18px 0;
+  text-align: justify;
+  text-justify: inter-word;
+  font-family: 'Inter', sans-serif;
+}
+
+.narrative-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.narrative-paragraph strong {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+}
+
+.risk-inline {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+}
+
+.risk-inline--low-moderate {
+  color: rgba(34, 197, 94, 0.9);
+}
+
+.risk-inline--moderate-high {
+  color: rgba(251, 191, 36, 0.9);
+}
+
+.risk-inline--high {
+  color: rgba(239, 68, 68, 0.9);
+}
+
+.risk-inline--very-high {
+  color: rgba(239, 68, 68, 1);
+}
+
+.risk-inline--very-high-active-disease {
+  color: rgba(239, 68, 68, 1);
+}
+
+/* Scrollbar styling */
+.patient-info::-webkit-scrollbar {
+  width: 6px;
+}
+
+.patient-info::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.patient-info::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.patient-info::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .patient-info-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .risk-badge {
+    align-self: flex-start;
+  }
+}
+

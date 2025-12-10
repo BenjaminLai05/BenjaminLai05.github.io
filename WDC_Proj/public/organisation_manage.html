@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Organization</title>
+    <link rel="stylesheet" href="./stylesheets/organisation_manage.css">
+    <link rel="stylesheet" href="./stylesheets/font_styles.css">
+    <script src="./javascripts/organisation_manage.js" defer></script>
+    <link rel="stylesheet" href="stylesheets/navigation_banner.css">
+    <script src="javascripts/navigation_banner.js" defer></script>
+</head>
+<body>
+    <!-- Banner -->
+    <div class="banner banner-large">
+        <div class="dropdown-icon">
+            <div class="nav_icon"></div>
+            <div class="nav_icon"></div>
+            <div class="nav_icon"></div>
+        </div>
+        <div class="organization-name shrink-me">
+            <a href="landing_page.html" style="text-decoration: none; color: inherit;">Allium</a>
+        </div>
+        <a href="landing_page.html" class="logo-link">
+            <img src="/images/allium_logo.png" alt="temp" class="navigation-banner-logo hide-me">
+        </a>
+        <div class="sub-heading hide-me">
+            <a>Cultivating...</a><br>
+            <a>Prosperity & Unity</a>
+        </div>
+    </div>
+    <!-- Dropdown menu -->
+    <div class="dropdown-menu" id="dropdown-menu">
+
+        <div class="dropdown-profile" id="dropdown-profile">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <hr id="dropdown-line1">
+
+        <div class="dropdown-important-links" id="dropdown-important-links">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <div id="user-clubs" class="true-hidden">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <div id="manager-clubs" class="true-hidden">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+    </div>
+    <div class="marker1"></div>
+    <div class="foreground"></div>
+
+    <div id="body2">
+        <div class="manage-org">
+            <div class="info">
+                <p>Currently Managing</p>
+                <img src="/images/allium_logo.png" alt="Club Image" id="organization-image">
+                <h1 id="organization-name">Organization Name</h1>
+            </div>
+            <div class="tabs">
+                <button type="button" class="tab-button active" data-tab="members-tab">Members</button>
+                <button type="button" class="tab-button" data-tab="events-tab">Events</button>
+                <button type="button" class="tab-button" data-tab="updates-tab">Updates</button>
+            </div>
+            <div class="tab-content active" id="members-tab">
+                <h3>Members</h3>
+                <div id="member-list">
+                    <select size="10" class="member-list" id="member-list-select"></select>
+                    <div class="buttons">
+                        <button class="member-remove" type="button">Remove Member</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content" id="events-tab">
+                <h3>Events</h3>
+                <div class="events">
+                    <div class="event-list">
+                        <select class="event-main" size="3" id="event-list">
+                            <!-- Event options will be added here -->
+                        </select>
+                        <div class="buttons">
+                            <button id="event_add" class="event-add" type="button">Add</button>
+                            <button id="event_view" class="event-view" type="button">View</button>
+                            <button id="event_delete" class="event-delete" type="button">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content" id="updates-tab">
+                <h3>Updates</h3>
+                <div class="events">
+                    <div class="event-list">
+                        <select class="event-main" size="3" id="update-list">
+                            <!-- Update options will be added here -->
+                        </select>
+                        <div class="buttons">
+                            <button id="update_add" class="event-add" type="button">Add</button>
+                            <button id="update_view" class="event-view" type="button">View</button>
+                            <button id="update_delete" class="event-delete" type="button">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="add_event">
+            <div class="modal-content">
+                <input type="text" id="title" placeholder="Title" required>
+                <textarea id="description" placeholder="Description" required></textarea>
+                <input type="date" id="date" required>
+                <input type="text" id="location" placeholder="Location" required>
+                <div class="modal-toggle">
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-members">
+                        <span class="slider round"></span>
+                    </label>
+                    <span id="toggle-label">Public</span>
+                </div>
+                <div class="modal-buttons">
+                    <button id="event_submit" type="button">Submit</button>
+                    <button id="event_cancel" type="button">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="add_update">
+            <div class="modal-content">
+                <input type="text" id="update_title" placeholder="Title" required>
+                <textarea id="update_description" placeholder="Description" required></textarea>
+                <input type="date" id="update_date" required>
+                <div class="modal-toggle">
+                    <label class="switch">
+                        <input type="checkbox" id="update_toggle-members">
+                        <span class="slider round"></span>
+                    </label>
+                    <span id="update_toggle-label">Public</span>
+                </div>
+                <div class="modal-buttons">
+                    <button id="update_submit" type="button">Submit</button>
+                    <button id="update_cancel" type="button">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="view_event_modal">
+            <div class="modal-content">
+                <h3>Event Details</h3>
+                <p>Event ID</p>
+                <input type="text" id="event_id" disabled>
+                <p>Title</p>
+                <input type="text" id="event_title" disabled>
+                <p>Description</p>
+                <input type="text" id="event_description" disabled>
+                <p>Date</p>
+                <input type="text" id="event_date" disabled>
+                <p>Location</p>
+                <input type="text" id="event_location" disabled>
+                <p>Post Date</p>
+                <input type="text" id="event_post_date" disabled>
+                <p>Members Only</p>
+                <input type="text" id="event_members_only" disabled>
+                <div class="modal-buttons">
+                    <button type="button" id="view_rsvp" class="modal-button">RSVPs</button>
+                    <button type="button" id="edit_event_button" class="modal-button">Edit</button>
+                    <button type="button" id="close_event_modal" class="modal-close-button">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="edit_event_modal">
+            <div class="modal-content">
+                <h3>Edit Event</h3>
+                <p>Event ID</p>
+                <input type="text" id="edit_event_id" disabled>
+                <p>Title</p>
+                <input type="text" id="edit_event_title">
+                <p>Description</p>
+                <input type="text" id="edit_event_description">
+                <p>Date</p>
+                <input type="date" id="edit_event_date">
+                <p>Location</p>
+                <input type="text" id="edit_event_location">
+                <p>Members Only</p>
+                <input type="text" id="edit_event_members_only" disabled>
+                <div class="modal-buttons">
+                    <button type="button" id="save_event" class="modal-button">Save</button>
+                    <button type="button" id="cancel_event_edit" class="modal-button">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="view_update_modal">
+            <div class="modal-content">
+                <h3>Update Details</h3>
+                <p>Update ID</p>
+                <input type="text" id="view_update_id" disabled>
+                <p>Title</p>
+                <input type="text" id="view_update_title" disabled>
+                <p>Description</p>
+                <input type="text" id="view_update_description" disabled>
+                <p>Date</p>
+                <input type="text" id="view_update_date" disabled>
+                <p>Post Date</p>
+                <input type="text" id="view_update_post_date" disabled>
+                <p>Members Only</p>
+                <input type="text" id="view_update_members_only" disabled>
+                <div class="modal-buttons">
+                    <button type="button" id="edit_update_button" class="modal-button">Edit</button>
+                    <button type="button" id="close_update_modal" class="modal-close-button">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="edit_update_modal">
+            <div class="modal-content">
+                <h3>Edit Update</h3>
+                <p>Update ID</p>
+                <input type="text" id="edit_update_id" disabled>
+                <p>Title</p>
+                <input type="text" id="edit_update_title">
+                <p>Description</p>
+                <input type="text" id="edit_update_description">
+                <p>Date</p>
+                <input type="date" id="edit_update_date">
+                <div class="modal-buttons">
+                    <button type="button" id="save_update" class="modal-button">Save</button>
+                    <button type="button" id="cancel_update_edit" class="modal-button">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="rsvp_modal">
+            <div class="modal-content">
+                <h3>RSVP List</h3>
+                <select size="10" class="rsvp-list" id="rsvp-list-select"></select>
+                <button type="button" id="back_to_event" class="modal-button">Back</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        window.onload = function() {
+            updatePageBasedOnPermissionLevel();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!-- Sign Up page - for users who need to create an account -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="stylesheets/navigation_banner.css">
+    <link rel="stylesheet" href="stylesheets/loading_styles.css">
+    <link rel="stylesheet" href="stylesheets/font_styles.css">
+    <link rel="stylesheet" href="stylesheets/edit_profile.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+<!-- Banner -->
+    <!-- Banner -->
+    <div class="banner banner-large">
+        <div class="dropdown-icon">
+            <div class="nav_icon"></div>
+            <div class="nav_icon"></div>
+            <div class="nav_icon"></div>
+        </div>
+        <div class="organization-name shrink-me">
+            <a href="landing_page.html" style="text-decoration: none; color: inherit;">Allium</a>
+        </div>
+        <a href="landing_page.html" class="logo-link">
+            <img src="/images/allium_logo.png" alt="temp" class="navigation-banner-logo hide-me">
+        </a>
+        <div class="sub-heading hide-me">
+            <a>Cultivating...</a><br>
+            <a>Prosperity & Unity</a>
+        </div>
+    </div>
+    <!-- Dropdown menu -->
+    <div class="dropdown-menu" id="dropdown-menu">
+
+        <div class="dropdown-profile" id="dropdown-profile">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <hr id="dropdown-line1">
+
+        <div class="dropdown-important-links" id="dropdown-important-links">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <div id="user-clubs" class="true-hidden">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <div id="manager-clubs" class="true-hidden">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+    </div>
+    <div class="marker1"></div>
+    <div class="foreground"></div>
+
+
+    <!-- form section -->
+    <div id="signup-body">
+        <div id="edit-profile-container">
+            <form @submit.prevent="saveProfile">
+                <img :src="profile.user_image ? profile.user_image : '/images/allium_logo_transparent.png'" alt="User Image" class="edit-user-image"/>
+                <!-- Display Name -->
+                <div class="form-group">
+                    <input type="text" v-model="profile.display_name" placeholder="Display Name">
+                </div>
+
+                <div v-if="profile.google_account === 0" class="form-group-fix">
+                    <!-- Username -->
+                    <div class="form-group">
+                        <input type="text" v-model="profile.username" placeholder="Username">
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <input type="email" v-model="profile.email" placeholder="E-mail Address">
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <input type="password" v-model="profile.password" placeholder="New Password">
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <input type="password" v-model="profile.confirm_password" placeholder="Confirm Password">
+                    </div>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group phone-group">
+                    <input type="text" v-model="profile.phone_number" placeholder="0412 345 678">
+                </div>
+
+                <!-- User Image -->
+                <div class="form-group">
+                    <input type="file" @change="handleFileUpload" accept="image/*">
+                </div>
+
+                <!-- Button Group -->
+                <div class="form-group button-group">
+
+                    <button type="button" class="edit-org-btn" @click="openPopup">Edit Joined Organizations</button>
+
+                    <div class="save-cancel">
+                        <button type="submit" class="save-btn">Save Changes</button>
+                        <button type="button" class="cancel-btn" @click="cancelEdit">Cancel</button>
+                    </div>
+                    <button type="button" class="delete-btn" @click="openDeletePopup">Delete</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Popup -->
+        <div class="popup" :class="{ show: isPopupVisible }">
+            <div class="popup-content">
+                <h3 style="margin-bottom: 10px;">Edit Joined Organizations</h3>
+                <p style="margin-bottom: 20px;">Warning, these changes come into effect immediately.</p>
+                <!-- Replace the following div with router call to populate organizations -->
+                <div id="edit-org-container">
+                    <ul>
+                        <li v-for="org in organizations" :key="org.organization_id" class="list-item">
+                            <div class="org-display-container">
+                                <p class="org-name">{{ org.name }}</p>
+                                <button
+                                    type="button"
+                                    @click="toggleReceiveEmails(org)"
+                                    :class="{'email-toggle-button': true, 'subscribed': org.receive_emails}"
+                                >
+                                    {{ org.receive_emails ? 'Subscribed' : 'Unsubscribed' }}
+                                </button>
+
+                                <button type="button" @click="confirmLeave(org.organization_id)" class="leave-org-button">Leave</button>
+                            </div>
+                            <!-- Add more fields as needed -->
+                        </li>
+                    </ul>
+                </div>
+                <button class="close-popup" type="button" name="close-popup" @click="closePopup">Close</button>
+            </div>
+        </div>
+
+        <div class="popup" :class="{ show: isConfirmLeaveVisible }">
+            <div class="popup-content">
+                <h3>Confirm Leave</h3>
+                <p style="margin-bottom: 10px;">Are you sure you want to leave this organization?</p>
+                <button class="con-leave-org-button" type="button" @click="handleLeave">Yes</button>
+                <button class="can-leave-org-button" type="button" @click="cancelLeave">No</button>
+            </div>
+        </div>
+
+        <div class="popup" :class="{ show: isDeletePopupVisible }">
+            <div class="popup-content">
+                <h3 style="margin-bottom: 10px;">Confirm Delete</h3>
+                <p style="margin-bottom: 10px;">Are you sure you want to permanently delete your account?<br>If so enter your password below.</p>
+                <input style="margin-bottom: 10px; margin-left: 2px;" type="password" v-model="deletePassword" placeholder="Password" class="password-input"><br>
+                <button type="button" @click="handleDelete" class="con-leave-org-button">Confirm Delete</button>
+                <button type="button" @click="cancelDelete" class="can-leave-org-button">Cancel</button>
+            </div>
+        </div>
+
+        <div class="popup" :class="{ show: isGoogleDeletePopupVisible }">
+            <div class="popup-content">
+                <h3 style="margin-bottom: 10px;">Confirm Delete</h3>
+                <p style="margin-bottom: 10px;">Are you sure you want to permanently delete your account?<br>If so enter your password below.</p>
+                <input style="margin-bottom: 10px; margin-left: 2px;" type="password" v-model="deletePassword" placeholder="Password" class="password-input"><br>
+                <button type="button" @click="handleDelete" class="con-leave-org-button">Confirm Delete</button>
+                <button type="button" @click="cancelDelete" class="can-leave-org-button">Cancel</button>
+            </div>
+        </div>
+
+        <div class="popup" :class="{ show: isSensitiveFieldPopupVisible }">
+            <div class="popup-content">
+                <h3 style="margin-bottom: 10px;">Confirm Changes</h3>
+                <p>Changes to username, email, or password require password confirmation.<br>Do you want to proceed?</p>
+                <input style="margin-bottom: 10px; margin-top: 10px; margin-left: 2px;" type="password" v-model="editProfilePassword" placeholder="Password" class="password-input"><br>
+                <button type="button" @click="submitProfile" class="con-leave-org-button">Confirm Password</button>
+                <button type="button" @click="isSensitiveFieldPopupVisible = false" class="can-leave-org-button">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- javascript file -->
+    <script src="javascripts/edit_profile.js" defer></script>
+    <script src="javascripts/navigation_banner.js" defer></script>
+    <script>
+        window.onload = function() {
+            updatePageBasedOnPermissionLevel(); //For nav bar
+        };
+    </script>
+</body>
+</html>

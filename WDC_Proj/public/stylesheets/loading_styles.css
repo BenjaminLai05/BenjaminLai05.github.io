@@ -1,0 +1,17 @@
+.loading-indicator {
+    text-align: center;
+    padding: 5px;
+    animation: flash 5s infinite;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -1px;
+}
+
+@keyframes flash {
+    0%, 50%, 100% {
+        opacity: 1;
+    }
+    25%, 75% {
+        opacity: 0;
+    }
+}

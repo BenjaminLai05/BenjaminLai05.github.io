@@ -1,0 +1,131 @@
+#signup-body {
+    font-family: Arial, sans-serif;
+    height: 90vh;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+}
+
+hr {
+    margin: 6px 0px;
+    border: 0 none;
+}
+
+.signup-container, .signin-container {
+    background-color: #f0f0f0;
+    padding: 30px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 350px;
+}
+
+input[type='email'], input[type='text'], input[type='password'], input[type='tel'], .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 18px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #303030;
+}
+
+.signin-link, .links {
+    text-align: center;
+    font-size: 15px;
+    margin: 10px;
+}
+
+.social-icon {
+    text-align: center;
+}
+
+.google-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100px;
+    margin-bottom: 18px;
+}
+
+ .homepage-logo-link {
+    height: 50px;
+    width: auto;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.name-group {
+    display: flex;                  /* Enables flexbox only within this container */
+    justify-content: space-between; /* Distributes space between children */
+    align-items: center;            /* Aligns items vertically to the center */
+}
+
+.name-group input[type="text"] {
+    flex: 1;                        /* Allows each input to grow equally */
+    margin: 0 5px;                  /* Space between the inputs */
+}
+
+.name-group input[type="text"]:first-child {
+    margin-left: 0;                 /* Removes left margin from the first input */
+}
+
+.name-group input[type="text"]:last-child {
+    margin-right: 0;                /* Removes right margin from the last input */
+}
+
+.form-group {
+    margin-bottom: 12px;
+    text-align: center;
+    padding: 3px;
+    width: 100%; /* Ensure full width */
+}
+
+.input-group {
+    display: flex;
+    justify-content: space-between; /* Adjust based on your layout preference */
+    align-items: center;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.phone-group {
+    display: flex;
+    margin-bottom: 12px;
+    align-items: center;
+    width: 100%; /* Ensure full width */
+    padding: 3px;
+}
+
+.flag-icon {
+    width: 34px;
+    height: auto; /* Adjust height accordingly */
+    margin-right: 8px; /* Space between flag and input */
+}

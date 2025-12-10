@@ -1,0 +1,356 @@
+body {
+  background-color: #ffffff;
+}
+
+hr {
+  margin-bottom: 10px;
+  height: 2px;
+  border-radius: 1px;
+  background-color: #ffffff;
+}
+
+.foreground {
+  background-color: #ffffff;
+}
+
+.highlight {
+  background: linear-gradient(120deg, #fcec99 0%, #fcec99 100%);
+  background-repeat: no-repeat;
+  background-size: 50% 50%;
+  background-position: 50% 100%;
+}
+
+.main-page {
+  display: flex;
+  display: row;
+}
+
+.hidden1 {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.true-hidden {
+  display: none;
+}
+
+/* Page Banner */
+.banner {
+  background-color: #141414;
+  color: #ffffff;
+  display: flex;
+  padding: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  box-shadow: 0px 2px 4px rgba(20, 20, 20, 0.5);
+  width: 100%;
+  height: 90px;
+  overflow: hidden;
+
+  top: 0;
+  position: sticky;
+  z-index: 9999;
+
+  transition: height 0.15s ease-in-out;
+}
+
+.marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Cover the width of the container */
+  height: 1px;
+  /* Minimal height */
+  opacity: 0;
+  /* Fully transparent */
+}
+
+/* leave empty */
+.marker1 {}
+
+.banner-small {
+  height: 60px;
+}
+
+.dropdown-icon {
+  height: 50px;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: 15px;
+  margin-left: 5px;
+  padding: 0px;
+}
+
+.nav_icon {
+  width: 35px;
+  height: 4px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  transition: background-color 0.15s ease-in-out, width 0.15s ease-in-out, height 0.15s ease-in-out,
+  border-radius 0.15s ease-in-out, margin-top 0.15s ease-in-out, margin-bottom 0.15s ease-in-out;
+}
+
+.nav_icon_shrunk {
+  width: 26px;
+  height: 2.5px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.nav_icon.clicked {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+
+.dropdown-icon-image {
+  height: 50px;
+  width: auto;
+  cursor: pointer;
+}
+
+.navigation-banner-logo {
+  height: 65px;
+  width: auto;
+  margin-right: 10px;
+  border-radius: 50%;
+  transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out;
+}
+
+.organization-name {
+  margin-right: 15px;
+  font-size: 64px;
+  font-weight: 200;
+  letter-spacing: -4px;
+  transition: color 0.5s ease-in-out, font-size 0.15s ease-in-out, letter-spacing 0.15s ease-in-out;
+  color: #ffffff;
+  background: url('/images/allium_logo.png') no-repeat center center;
+  background-size: cover;
+  -webkit-background-clip: text;
+  background-position: -10px center;
+  background-size: 200% auto;
+  background-clip: text;
+}
+
+.organization-name-shrunk {
+  font-size: 45px;
+  letter-spacing: -2px;
+  color: transparent;
+}
+
+
+.sub-heading {
+  color: #ffffff;
+  font-weight: 50;
+  letter-spacing: 2px;
+  margin-top: 14px;
+  transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out;
+}
+
+.link {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  padding: 10px;
+  background-color: rgba(25, 25, 25, 0.8);
+  color: #ffffff;
+  overflow: auto;
+  z-index: 9998;
+  border-radius: 0 0 10px 0;
+  font-size: large;
+  font-weight: 100;
+  letter-spacing: -0.5px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+  max-width: 250px;
+  max-height: 85vh;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50px);
+  backdrop-filter: blur(0px);
+  transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out, backdrop-filter 0.15s ease-in-out;
+
+  scrollbar-width: thin;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  backdrop-filter: blur(5px);
+  pointer-events: auto;
+}
+
+/* Icon profile in dropdown */
+.dropdown-profile {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+}
+
+.dropdown-profile-image-container {
+  min-width: 75px;
+  height: 75px;
+  overflow: hidden;
+  margin-right: 10px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 1);
+  border: 2px solid #ffffff;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.dropdown-profile-image {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.dropdown-profile-name {
+  align-self: center;
+  font-weight: bold;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #ffffff;
+}
+
+/* Guest stuff */
+
+.dropdown-profile-guest-name {
+  font-size: 32px;
+  font-weight: 200;
+  letter-spacing: -1px;
+  align-items: center;
+
+  max-width: 160px;
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.dropdown-profile-guest-image {
+  width: 65px;
+  height: 65px;
+  overflow: hidden;
+  margin-right: 10px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 1);
+  border: 2px solid #ffffff;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+  object-fit: cover;
+}
+
+.dropdown-profile-guest-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 5px;
+}
+
+.dropdown-profile-guest-wrapper1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-profile-guest-wrapper2 {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 7.5px;
+}
+
+/* Clickable links */
+.dropdown-important-links {
+  padding-bottom: 10px;
+}
+
+.dropdown-link {
+  font-size: 24px;
+  letter-spacing: -1px;
+}
+
+/* My clubs */
+.dropdown-myclubs-wrapper {
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.myclubs-container {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  max-width: 100%;
+  box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.club-container {
+  display: flex;
+  min-height: 20px;
+  height: 20px;
+  width: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 2.5px;
+  margin-top: 2.5px;
+  margin-left: 2.5px;
+}
+
+.club-container-img {
+  object-fit: cover;
+  height: 100%;
+  width: 20px;
+  margin-right: 5px;
+  border-radius: 2.5px;
+}
+
+.club-container p {
+  margin: 0;
+  /* Remove default margin */
+  flex: 1;
+  /* Allow paragraph to flex and take remaining space */
+  overflow: hidden;
+  /* Hide overflow text */
+  text-overflow: ellipsis;
+  /* Display ellipsis for overflow text */
+  font-size: 14px;
+}
+
+.hidden {
+  max-height: 82.5px;
+  overflow: hidden;
+}
+
+.show-all-hidden {
+  display: none;
+}
+
+.dropdown-managemyclubs-wrapper {
+  margin-bottom: 10px;
+}
+
+.show-button {
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+  padding: 2.5px;
+  background-color: #ffffff;
+  width: 100%;
+}
+
+.show-button:hover {
+  background-color: #ccc;
+}
+

@@ -1,6 +1,7 @@
 # src/api/main.py
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from io import BytesIO
 from PIL import Image
 from ultralytics import YOLO          # pip install ultralytics
@@ -21,6 +22,15 @@ from change_metrics import (
 )
 
 app = FastAPI(title="MRI-Tumour Scanner")
+
+# Add CORS middleware to allow frontend requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, replace with your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 BASE_DIR = Path(__file__).resolve().parent      # → src/api/
 MODEL_PATH = BASE_DIR / "yolo12n_3.pt"      

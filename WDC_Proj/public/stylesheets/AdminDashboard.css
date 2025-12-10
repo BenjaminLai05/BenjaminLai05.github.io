@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.table-search-container {
+    width: 90%;
+    margin: 160px auto 20px auto; /* Add 20px to the top margin to move the table down */
+    position: relative;
+}
+
+.search-container {
+    position: absolute;
+    top: -50px; /* Adjust to place it above the table */
+    right: 0;
+}
+
+.search-container input {
+    padding: 10px;
+    font-size: 18px;
+    border: none; /* Remove the border */
+    outline: none; /* Remove the outline */
+    background-color: transparent; /* Optional: make the background transparent */
+}
+
+.table-container {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 18px;
+    margin-top: 20px; /* Ensure table has top margin */
+}
+
+.table-container th, .table-container td {
+    padding: 15px;
+    text-align: left;
+    border: 1px solid #ccc; /* Maintain uniform border styling */
+    /* Optionally set specific widths for each column if needed */
+}
+
+.table-container .email-col { width: 20%; }
+.table-container .username-col { width: 15%; }
+.table-container .name-col { width: 20%; }
+.table-container .phone-col { width: 15%; }
+.table-container .created-col { width: 15%; }
+.table-container .actions-col { width: 15%; }
+
+
+.table-container th {
+    background-color: #f2f2f2;
+}
+
+.table-container tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.action-icons img {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+}

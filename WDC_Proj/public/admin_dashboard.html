@@ -1,0 +1,342 @@
+<!-- Sign Up page - for users who need to create an account -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="stylesheets/navigation_banner.css">
+    <link rel="stylesheet" href="stylesheets/loading_styles.css">
+    <link rel="stylesheet" href="stylesheets/font_styles.css">
+    <link rel="stylesheet" href="stylesheets/admin_dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+
+<body>
+    <!-- Banner -->
+    <!-- Banner -->
+    <div class="banner banner-large">
+        <div class="dropdown-icon">
+            <div class="nav_icon"></div>
+            <div class="nav_icon"></div>
+            <div class="nav_icon"></div>
+        </div>
+        <div class="organization-name shrink-me">
+            <a href="landing_page.html" style="text-decoration: none; color: inherit;">Allium</a>
+        </div>
+        <a href="landing_page.html" class="logo-link">
+            <img src="/images/allium_logo.png" alt="temp" class="navigation-banner-logo hide-me">
+        </a>
+        <div class="sub-heading hide-me">
+            <a>Cultivating...</a><br>
+            <a>Prosperity & Unity</a>
+        </div>
+    </div>
+    <!-- Dropdown menu -->
+    <div class="dropdown-menu" id="dropdown-menu">
+
+        <div class="dropdown-profile" id="dropdown-profile">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <hr id="dropdown-line1">
+
+        <div class="dropdown-important-links" id="dropdown-important-links">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <div id="user-clubs" class="true-hidden">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <div id="manager-clubs" class="true-hidden">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+    </div>
+    <div class="marker1"></div>
+    <div class="foreground"></div>
+
+
+    <!-- form section -->
+    <div id="main-body">
+        <div id="edit-profile-container">
+            <h1>Admin Dashboard</h1>
+            <p style="margin-bottom: 30px; text-align: center;" >Manage users and organizations from this page</p>
+            <!-- Buttons Group -->
+            <div class="form-group button-group">
+                    <button type="button" class="edit-org-btn" @click="openEditUsers">Manage Users</button>
+                    <button type="button" class="edit-org-btn" @click="openManageOrganizations">Manage Organizations</button>
+            </div>
+        </div>
+
+        <!-- Popup -->
+        <div class="popup" :class="{ show: viewUsersPopup }">
+            <div class="popup-content">
+                <h3 style="margin-bottom: 10px;">All Users</h3>
+                <ul>
+                    <li v-for="user in users" :key="user.user_id" class="list-item">
+
+                        <div class="org-display-container">
+                        <p>UID: {{user.user_id }}</p>
+
+                        <div v-if="user.google_account === 0">
+                            <p>Username: {{user.username}}, Email: {{user.email}}</p>
+                        </div>
+
+                        <p style="margin-bottom: 5px">User image:</p>
+                        <img :src="user.user_image ? user.user_image : '/images/allium_logo_transparent.png'" alt="User Image" class="images-display"/>
+
+                        <p>Display-name: {{user.display_name}}</p>
+
+                        <p>Phone-number: {{user.phone_number}}</p>
+                        <p>Permission-level: {{user.permission}}</p>
+
+                        <p style="margin-bottom: 5px">Creation Date: {{user.creation_date}}</p>
+
+                        <div class="edit-user-buttons">
+                            <button class="new-button-style" type="button" name="edit-user" @click="showEditForm(user)">Edit
+                                UID: {{user.user_id}}</button>
+                            <button class="new-button-style-important" type="button" name="edit-user"
+                                @click="deleteUser(user.user_id)">Delete UID: {{user.user_id}}</button>
+                            <button class="new-button-style-manager" type="button" v-if="user.permission >= 2" @click="openManageOrgsPopup(user)">Edit Managing Organizations</button>
+                        </div>
+                        </div>
+                    </li>
+                </ul>
+                <button class="close-popup" type="button" name="close-popup" @click="closeEditUsers">Close</button>
+            </div>
+        </div>
+
+        <!-- Edit User Form Popup -->
+        <div class="popup" :class="{ show: showEditPopup }">
+            <div class="popup-content">
+                <h3 style="margin-bottom: 10px;">Editing User ID: {{editUserForm.userId}}</h3>
+                <form @submit.prevent="confirmEdit" id="edit-user-box">
+                    <div class="form-group">
+                        <label for="displayName">Display Name:</label>
+                        <input type="text" v-model="editUserForm.displayName" id="displayName">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user_image">User Image:</label>
+                        <input type="file" @change="handleUserFileUpload" id="edit-organization_image">
+                        <img :src="editUserForm.user_image" id="edit-image-preview" alt="Image Preview"
+                            style="max-width: 100%; height: auto; display: block; margin-top: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </div>
+
+                    <div v-if="editUserForm.google_account === 0">
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" v-model="editUserForm.username" id="username" :disabled="isGoogleAccount">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" v-model="editUserForm.email" id="email" :disabled="isGoogleAccount">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number:</label>
+                        <input type="text" v-model="editUserForm.phoneNumber" id="phoneNumber">
+                    </div>
+                    <div class="form-group">
+                        <label for="permission">Permission:</label>
+                        <input type="text" v-model="editUserForm.permission" id="permission">
+                    </div>
+                        <div class="button-holder">
+                            <button type="submit" class="org-save-btn">Confirm</button>
+                            <button type="button" class="org-cancel-btn" @click="closeEditForm">Cancel</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="popup" :class="{ show: viewManageOrgsPopup }">
+            <div class="popup-content">
+              <h3 style="margin-bottom: 10px;">Assign Positions Here</h3>
+              <ul>
+                <li v-for="org in managedOrganizations" :key="org.organization_id" class="list-item">
+                  <div class="org-display-container">
+                    <p style="margin-bottom: 5px">Name: {{ org.name }}, Organization ID: {{ org.organization_id }}</p>
+                    <p style="margin-bottom: 5px">Organization Logo:</p>
+                    <img style="margin-bottom: 5px" :src="org.organization_image ? org.organization_image : '/images/allium_logo_transparent.png'"
+                    alt="Organization Image" class="images-display"/>
+                    <div class="edit-org-buttons">
+                        <button v-if="org.is_managed" class="new-button-style-important" type="button"
+                        @click="removePosition(org.organization_id)">Revoke Position</button>
+                        <button v-else class="new-button-style" type="button"
+                        @click="assignManager(org.organization_id)">Make Manager</button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <div class="org-popup-buttons">
+                <button class="close-popup" type="button" name="close-popup" @click="closeManageOrgsPopup">Close</button>
+              </div>
+            </div>
+        </div>
+
+        <div class="popup" :class="{ show: viewOrganizationsPopup }">
+            <div class="popup-content">
+                <h3 style="margin-bottom: 10px;">Manage Organizations</h3>
+                <ul>
+                    <li v-for="org in organizations" :key="org.organization_id" class="list-item">
+                        <div class="org-display-container">
+
+                        <p>OID: {{ org.organization_id }}</p>
+                        <p style="margin-bottom: 5px">Organization Logo:</p>
+                        <img :src="org.organization_image ? org.organization_image : '/images/allium_logo_transparent.png'"
+                        alt="Organization Image" class="images-display"/>
+                        <p style="margin-bottom: 5px">Name: {{ org.name }}</p>
+
+                        <div class="edit-org-buttons">
+
+                            <button class="new-button-style" type="button" name="view-org"
+                                @click="viewOrganizationPage(org.organization_id)">View Page</button>
+                            <button class="new-button-style" type="button" name="manage-org"
+                                @click="manageOrganizationPage(org.organization_id)">Manage Page</button>
+
+                            <button class="new-button-style" type="button" name="edit-org" @click="showEditOrgForm(org)">Edit
+                                Organization</button>
+
+                            <button class="new-button-style-important" type="button" name="delete-org"
+                                @click="deleteOrganization(org.organization_id)">Delete OID: {{ org.organization_id
+                                }}</button>
+                        </div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="org-popup-buttons">
+                    <button class="close-popup" type="button" name="close-popup"
+                        @click="closeManageOrganizations">Close</button>
+
+                    <button class="new-org" type="button" name="new-org" @click="createNewOrg">Create New
+                        Organization</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="popup" :class="{ show: viewCreateOrgPopup }">
+            <div class="popup-content">
+                <h3>Create New Organization</h3>
+                <form @submit.prevent="submitNewOrganization" id="new-org-box" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" v-model="newOrgForm.name" id="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" v-model="newOrgForm.email" id="org-email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="organization_image">Organization Image:</label>
+                        <input type="file" @change="handleFileUpload" id="organization_image">
+                        <img :src="newOrgForm.organization_image" id="image-preview" alt="Image Preview"
+                            style="max-width: 100%; height: auto; display: block; margin-top: 10px;">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="body0">Description:</label>
+                        <textarea v-model="newOrgForm.body0" id="body0"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="body1">Additional Info 1:</label>
+                        <textarea v-model="newOrgForm.body1" id="body1"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="body2">Additional Info 2:</label>
+                        <textarea v-model="newOrgForm.body2" id="body2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="social_link0">Social Link 1:</label>
+                        <input type="text" v-model="newOrgForm.social_link0" id="social_link0">
+                    </div>
+                    <div class="form-group">
+                        <label for="social_link1">Social Link 2:</label>
+                        <input type="text" v-model="newOrgForm.social_link1" id="social_link1">
+                    </div>
+                    <div class="form-group">
+                        <label for="social_link2">Social Link 3:</label>
+                        <input type="text" v-model="newOrgForm.social_link2" id="social_link2">
+                    </div>
+
+                    <div class="button-holder">
+                        <button type="submit" class="org-save-btn">Create</button>
+                        <button type="button" class="org-cancel-btn" @click="closeCreateOrg">Cancel</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="popup" :class="{ show: viewEditOrgPopup }">
+            <div class="popup-content">
+                <h3>Edit Organization</h3>
+                <form @submit.prevent="submitEditOrganization" id="edit-org-box" style="padding-right: 7px;">
+                    <div class="form-group">
+                        <label for="edit-name">Name:</label>
+                        <input type="text" v-model="editOrgForm.name" id="edit-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-email">Email:</label>
+                        <input type="email" v-model="editOrgForm.email" id="edit-email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-organization_image">Organization Image:</label>
+                        <input type="file" @change="handleEditFileUpload" id="edit-organization_image">
+                        <img :src="editOrgForm.organization_image" id="edit-image-preview" alt="Image Preview"
+                            style="max-width: 100%; height: auto; display: block; margin-top: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-body0">Description:</label>
+                        <textarea v-model="editOrgForm.body0" id="edit-body0"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-body1">Additional Info 1:</label>
+                        <textarea v-model="editOrgForm.body1" id="edit-body1"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-body2">Additional Info 2:</label>
+                        <textarea v-model="editOrgForm.body2" id="edit-body2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-social_link0">Social Link 1:</label>
+                        <input type="text" v-model="editOrgForm.social_link0" id="edit-social_link0">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-social_link1">Social Link 2:</label>
+                        <input type="text" v-model="editOrgForm.social_link1" id="edit-social_link1">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-social_link2">Social Link 3:</label>
+                        <input type="text" v-model="editOrgForm.social_link2" id="edit-social_link2">
+                    </div>
+                    <div class="button-holder">
+                        <button type="submit" class="org-save-btn">Save</button>
+                        <button type="button" class="org-cancel-btn" @click="closeEditOrg">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- javascript file -->
+    <script src="javascripts/admin_dashboard.js" defer></script>
+    <script src="javascripts/navigation_banner.js" defer></script>
+    <script>
+        window.onload = function () {
+            updatePageBasedOnPermissionLevel(); //For nav bar
+        };
+    </script>
+</body>
+
+</html>

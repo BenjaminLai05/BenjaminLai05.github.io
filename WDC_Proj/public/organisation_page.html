@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organization Page</title>
+    <link rel="stylesheet" href="./stylesheets/organisation_style.css">
+    <link rel="stylesheet" href="./stylesheets/font_styles.css">
+    <script src="https://kit.fontawesome.com/32fc5bfd73.js" crossorigin="anonymous"></script>
+    <script src="./javascripts/organisation_page.js" defer></script>
+    <link rel="stylesheet" href="stylesheets/navigation_banner.css">
+    <script src="javascripts/navigation_banner.js" defer></script>
+</head>
+<body>
+        <!-- Banner -->
+        <div class="banner banner-large">
+            <div class="dropdown-icon">
+                <div class="nav_icon"></div>
+                <div class="nav_icon"></div>
+                <div class="nav_icon"></div>
+            </div>
+            <div class="organization-name shrink-me">
+                <a href="landing_page.html" style="text-decoration: none; color: inherit;">Allium</a>
+            </div>
+            <a href="landing_page.html" class="logo-link">
+                <img src="/images/allium_logo.png" alt="temp" class="navigation-banner-logo hide-me">
+            </a>
+            <div class="sub-heading hide-me">
+                <a>Cultivating...</a><br>
+                <a>Prosperity & Unity</a>
+            </div>
+        </div>
+        <!-- Dropdown menu -->
+        <div class="dropdown-menu" id="dropdown-menu">
+
+            <div class="dropdown-profile" id="dropdown-profile">
+                <div class="loading-indicator" style="color: #fff;">Loading...</div>
+            </div>
+
+            <hr id="dropdown-line1">
+
+            <div class="dropdown-important-links" id="dropdown-important-links">
+                <div class="loading-indicator" style="color: #fff;">Loading...</div>
+            </div>
+
+            <div id="user-clubs" class="true-hidden">
+                <div class="loading-indicator" style="color: #fff;">Loading...</div>
+            </div>
+
+            <div id="manager-clubs" class="true-hidden">
+                <div class="loading-indicator" style="color: #fff;">Loading...</div>
+            </div>
+        </div>
+        <div class="marker1"></div>
+        <div class="foreground"></div>
+
+
+    <div class="organization-page-main">
+        <div class="organization-top-section">
+            <div class="container">
+                <img src="/images/allium_logo.png" alt="Organization Image" id="organization-image">
+                <div class="top-info">
+                    <h1 id="organization-name">Organization Name</h1>
+                    <div class="join-contact">
+                        <button type="button" id="join-button" style="display: none;">Join</button>
+                        <button type="button" id="leave-button" style="display: none;">Leave</button>
+                        <button id="manage-button" type="button" style="display: none;">Manage</button>
+                        <i class="fa-solid fa-envelope" id="email-link"></i>
+                        <i class="fa-brands fa-facebook-f" id="facebook-link"></i>
+                        <i class="fa-brands fa-x-twitter" id="twitter-link"></i>
+                        <i class="fa-brands fa-instagram" id="instagram-link"></i>
+                        <button id="managers-button" type="button">Managers</button>
+                    </div>
+                    <div class="email-notifications">
+                        <label for="email-notifications-toggle">Email Notifications</label>
+                        <label class="switch">
+                            <input type="checkbox" id="email-notifications-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="organization-main-section">
+            <div class="section-1 organization-segment" id="events-updates-section">
+                <h2 class="events-title">Events and Updates</h2>
+                <div class="events-wrapper">
+                    <div class="events-box">
+                        <div class="events-content" id="events-updates-select">
+                            <!-- Events and updates will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-1 organization-segment">
+                <h2>About Us</h2>
+                <p id="organization-description">Description</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Managers Modal -->
+    <div id="managers-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Managers</h2>
+            <div class="manager-list">
+                <select id="manager-select" multiple></select>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            updatePageBasedOnPermissionLevel();
+        };
+    </script>
+</body>
+</html>

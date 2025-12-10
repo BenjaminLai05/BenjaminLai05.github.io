@@ -1,0 +1,271 @@
+#signup-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+#edit-profile-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+img {
+    object-fit: cover;
+    object-position: center;
+}
+
+#edit-org-container{
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin-bottom: 15px;
+    overflow: auto;
+    max-height: 500px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group {
+    width: 100%;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group-fix {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.phone-group {
+    display: flex;
+    align-items: center;
+}
+
+.phone-group .flag-icon {
+    width: 30px;
+    margin-right: 10px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.button-group button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button-group .save-btn {
+    background-color: #007bff;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.button-group .save-btn:hover {
+    background-color: #0056b3;
+}
+
+.button-group .cancel-btn {
+    background-color: #6c757d;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.button-group .cancel-btn:hover {
+    background-color: #5a6268;
+}
+
+.button-group .delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.button-group .delete-btn:hover {
+    background-color: #c82333;
+}
+
+.button-group .edit-org-btn {
+    background-color: rgb(236, 236, 236);
+    margin-bottom: 10px;
+}
+
+.button-group .edit-org-btn:hover {
+    background-color: rgb(210, 210, 210);
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    visibility: hidden;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 700px;
+}
+
+.popup.show {
+    visibility: visible;
+}
+
+.close-popup {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.org-display-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.org-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.leave-org-button {
+    display: inline-block;
+    padding: 4px 6px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: center;
+    background-color: rgb(110, 110, 110);
+    color: white;
+    margin-left: auto;
+    border: none;
+}
+
+.leave-org-button:hover {
+    background-color: rgb(236, 50, 50);
+}
+
+.list-item {
+    margin-bottom: 10px;
+}
+
+.con-leave-org-button {
+    display: inline-block;
+    padding: 4px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: center;
+    background-color: #38bb41;
+    color: white;
+    margin-left: auto;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.con-leave-org-button:hover {
+    background-color: #32a739;
+}
+
+.can-leave-org-button{
+    display: inline-block;
+    padding: 4px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: center;
+    background-color: #ed4141;
+    color: white;
+    margin-left: auto;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.can-leave-org-button:hover {
+    background-color: #d93b3b;
+}
+
+.edit-user-image {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 20px;
+}
+
+.close-popup {
+    background-color: rgb(236, 236, 236);
+}
+
+.close-popup:hover {
+    background-color: rgb(210, 210, 210);
+}
+
+.email-toggle-button {
+    cursor: pointer;
+    outline: none;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 16px;
+    font-size: 12px;
+    outline: none;
+    color: rgb(255, 255, 255);
+    background-color: #2f94ff;
+    margin-left: 20px; /* Default color for not receiving updates */
+}
+
+.email-toggle-button.subscribed {
+    color: rgb(78, 78, 78); /* Color for receiving updates */
+    background-color: rgb(236, 236, 236);
+}
+
+.email-toggle-button:hover {
+    background-color: #2077d4;
+    /* Hover color for not receiving updates */
+}
+
+.email-toggle-button.subscribed:hover {
+     /* Hover color for receiving updates */
+     background-color: rgb(210, 210, 210);
+}

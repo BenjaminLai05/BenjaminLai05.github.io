@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allium, Prosperity and Unity</title>
+    <link rel="stylesheet" href="stylesheets/navigation_banner.css">
+    <link rel="stylesheet" href="stylesheets/landing_page.css">
+    <link rel="stylesheet" href="stylesheets/loading_styles.css">
+    <link rel="stylesheet" href="stylesheets/font_styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+<body>
+    <!-- Banner -->
+    <div class="banner banner-large">
+        <div class="dropdown-icon">
+            <div class="nav_icon"></div>
+            <div class="nav_icon"></div>
+            <div class="nav_icon"></div>
+        </div>
+        <div class="organization-name shrink-me">
+            <a href="landing_page.html" style="text-decoration: none; color: inherit;">Allium</a>
+        </div>
+        <a href="landing_page.html" class="logo-link">
+            <img src="/images/allium_logo.png" alt="temp" class="navigation-banner-logo hide-me">
+        </a>
+        <div class="sub-heading hide-me">
+            <a>Cultivating...</a><br>
+            <a>Prosperity & Unity</a>
+        </div>
+    </div>
+    <!-- Dropdown menu -->
+    <div class="dropdown-menu" id="dropdown-menu">
+
+        <div class="dropdown-profile" id="dropdown-profile">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <hr id="dropdown-line1">
+
+        <div class="dropdown-important-links" id="dropdown-important-links">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <div id="user-clubs" class="true-hidden">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <div id="manager-clubs" class="true-hidden">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+    </div>
+    <div class="marker1"></div>
+    <div class="foreground">
+
+
+
+    <!-- Rest of page-->
+    <div class="events-title-wrapper" id="events-title-wrapper">
+        <div class="events-title">
+            <h1>Recent Events & Updates</h1>
+            <h2>See what has been happening.</h2>
+        </div>
+    </div>
+    <div class="events-wrapper" id="events-wrapper">
+        <div class="events-box">
+            <div class="events-label">
+                <div class="events-show-all">
+                    <div class="plusminus"></div>
+                </div>
+                <h4>View them all here</h4>
+            </div>
+            <div class="events-content" id="events-box">
+                <div class="loading-indicator" style="color: #000000;">Loading...</div>
+                <p id="no-news">Unfortunately, it looks like nothing is happening right now.</p>
+            </div>
+        </div>
+    </div>
+    <!-- About -->
+    <div class="about">
+        <h1 class="about-title">Welcome to Allium</h1>
+        <h4>
+            Inspired by the yellow flower symbolizing unity and prosperity.
+            At Allium, we believe in the power of coming together to create positive change in our communities.
+            Our platform connects you with volunteer organizations that align with your passions and values.
+            Whether you're looking to support local initiatives or global causes,
+            Allium helps you find opportunities where your efforts can make a meaningful impact.
+            Join us in fostering a spirit of unity and goodwill, and discover the joy of giving back through volunteerism.
+            Together, let's cultivate a brighter future.
+        </h4>
+    </div>
+
+    <div class="cards-title-wrapper">
+        <!-- Find an Org -->
+        <div class="organization-catalogue-title">
+            <h1>Find your cause here</h1>
+            <h2>Click on the cards below to get involved.</h2>
+        </div>
+
+        <!-- search -->
+        <div class="search">
+            <div class="dropdown-search-label">
+                <h5>Looking for Something Specific?</h5>
+                <h4>Try the Search Bar!</h4>
+            </div>
+            <div class="search-container">
+                <input name="search-box" type="text" class="search-input" placeholder="Search Here...">
+                <span class="material-symbols-outlined search-button">
+                    search
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Organization Listing -->
+
+    <div class="organizations-wrapper">
+        <div class="grid-container" id="grid-container">
+            <div class="grid-item">
+                <div class="loading-indicator" style="color: #000;">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-bottom">
+        <h1 style="padding-bottom: 10px;">Having trouble finding the <br> Perfect cause?</h1>
+        <h2>You are always welcome to contact us!</h2>
+        <div style="border-radius: 3px; padding: 20px; border-top: 1px solid #ddd; margin-top: 20px;">
+            <div>
+                <div style="font-size: 18px">
+                    <strong>Email:</strong> <a href="mailto:alliumnotifications@gmail.com">alliumnotifications@gmail.com</a>
+                </div>
+                <div style="font-size: 18px">
+                    <strong>Phone:</strong> +1 (123) 456-7890
+                </div>
+                <div style="font-size: 18px">
+                    <strong>Address:</strong> 123 Volunteer Lane, Kind City, CA 12345
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<script src="javascripts/landing_page.js" defer></script>
+<script src="javascripts/navigation_banner.js" defer></script>
+
+<script>
+    window.onload = function() {
+        updatePageBasedOnPermissionLevel();
+        updatePageBasedOnPermissionLevel_landing();
+        createOrganizationCards();
+        displayEvents();
+    };
+</script>
+
+</body>
+</html>

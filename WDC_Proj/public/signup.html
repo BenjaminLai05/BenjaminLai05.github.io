@@ -1,0 +1,158 @@
+<!-- Sign Up page - for users who need to create an account -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- adjust scaling of page -->
+    <link rel="stylesheet" href="stylesheets/font_styles.css"> <!-- consistent font types in all pages -->
+    <link rel="stylesheet" href="stylesheets/signstyle.css"> <!-- external css file -->
+    <link rel="stylesheet" href="stylesheets/navigation_banner.css">
+
+    <title>Sign Up</title>
+</head>
+
+<body>
+    <!-- Banner -->
+    <div class="banner banner-large">
+        <div class="dropdown-icon">
+            <div class="nav_icon"></div>
+            <div class="nav_icon"></div>
+            <div class="nav_icon"></div>
+        </div>
+
+        <div class="organization-name shrink-me">
+            <a href="landing_page.html" style="text-decoration: none; color: inherit;">Allium</a>
+        </div>
+        <a href="landing_page.html" class="logo-link">
+            <img src="/images/allium_logo.png" alt="temp" class="navigation-banner-logo hide-me">
+        </a>
+        <div class="sub-heading hide-me">
+            <a>Cultivating...</a><br>
+            <a>Prosperity & Unity</a>
+        </div>
+    </div>
+
+    <!-- Dropdown menu -->
+    <div class="dropdown-menu" id="dropdown-menu">
+
+        <div class="dropdown-profile" id="dropdown-profile">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <hr id="dropdown-line1">
+
+        <div class="dropdown-important-links" id="dropdown-important-links">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <div id="user-clubs" class="true-hidden">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+
+        <div id="manager-clubs" class="true-hidden">
+            <div class="loading-indicator" style="color: #fff;">Loading...</div>
+        </div>
+    </div>
+    <div class="marker1"></div>
+
+
+    <!-- form section -->
+    <div id="signup-body">
+        <div class="signup-container">
+            <form id="signupForm">
+                <img src="/images/allium_logo_transparent.png" alt="temp logo" class="logo"/> <!-- page logo -->
+
+                <!-- div holds email -->
+                <div class="form-group">
+                    <input type="email" id="email" name="email" placeholder="E-mail Address" required>
+                </div>
+
+                <!-- div holds username -->
+                <div class="form-group">
+                    <input type="text" id="username" name="username" placeholder="Username" required>
+                </div>
+
+                <!-- div holds first and last name -->
+                <div class="form-group name-group">
+                    <!-- First name -->
+                    <input type="text" id="firstname" name="firstname" placeholder="First Name" required>
+                    <!-- Last name -->
+                    <input type="text" id="lastname" name="lastname" placeholder="Last Name" required>
+                </div>
+
+                <!-- div holds password -->
+                <div class="form-group">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                </div>
+
+                <!-- div holds confirm password -->
+                <div class="form-group">
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password"
+                        required>
+                </div>
+
+                <!-- Phone number and flag container -->
+                <div class="form-group">
+                    <input type="tel" id="phone-number" name="phone-number" placeholder="0412 345 678">
+                </div>
+
+                <!-- Sign Up Button -->
+                <div class="form-group">
+                    <button type="submit">Sign Up</button>
+                </div>
+
+                <!-- Sign In Link -->
+                <div class="signin-link">
+                    <p>Have an account? <a href="/signin.html">Sign In</a></p>
+                </div>
+
+                <!-- Social Media Icons -->
+                <div class="social-icon">
+                    <p>or you can sign in with</p>
+                    <!-- Google Auth Login -->
+                </div>
+                <div class="google-icon">
+                    <div id="g_id_onload"
+                        data-client_id="787073395930-1oo149bfjjbljv2r1e6b38eq7evk578h.apps.googleusercontent.com"
+                        data-context="signin"
+                        data-ux_mode="popup"
+                        data-callback="do_google_login"
+                        data-auto_prompt="false">
+                    </div>
+
+                    <div class="g_id_signin"
+                        data-type="icon"
+                        data-shape="circle"
+                        data-theme="outline"
+                        data-text="signin_with"
+                        data-size="medium">Button
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- footer -->
+    <div>
+
+    </div>
+
+    <!-- javascript file -->
+    <script src="javascripts/signup.js"></script>
+
+    <!-- Google Sign In Option-->
+    <script src="https://accounts.google.com/gsi/client" async></script>
+
+    <!-- Nav bar -->
+    <script src="javascripts/navigation_banner.js" defer></script>
+
+    <script>
+        window.onload = function() {
+            updatePageBasedOnPermissionLevel();
+        };
+    </script>
+</body>
+
+</html>

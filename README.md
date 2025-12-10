@@ -19,14 +19,6 @@ Portfolio/
 ├── styles.css          # All styles (organized in sections)
 ├── script.js           # Vanilla JavaScript for animations
 ├── images/             # Local image assets
-│   ├── profile.jpg
-│   ├── favicon.png
-│   ├── framerit-logo.png
-│   ├── framer-logo.png
-│   ├── framerit-preview.jpg
-│   ├── framer-preview.jpg
-│   ├── contra-preview.jpg
-│   └── framerit-icon.png
 └── README.md           # This file
 ```
 

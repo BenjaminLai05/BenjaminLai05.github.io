@@ -335,6 +335,7 @@ p {
 .card-content p {
     opacity: 0.5;
     line-height: 1.6;
+    text-align: justify;
 }
 
 .btn-visit {
@@ -416,6 +417,7 @@ p {
     opacity: 0.5;
     line-height: 1.6;
     margin: 0;
+    text-align: justify;
 }
 
 .tech-list-divider {

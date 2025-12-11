@@ -40,6 +40,28 @@ model = YOLO(str(MODEL_PATH))                   # load once
 
 log = logging.getLogger("uvicorn")  # reuse Uvicorn logger
 
+@app.get("/")
+async def root():
+    """Root endpoint - API information"""
+    return {
+        "message": "MRI Tumor Scanner API",
+        "version": "1.0.0",
+        "endpoints": {
+            "/scan": "POST - Scan MRI image for tumors",
+            "/scan-with-mask": "POST - Scan MRI image and return mask",
+            "/register-scans": "POST - Register (align) two MRI scans",
+            "/compare-scans": "POST - Compare two MRI scans for changes",
+            "/docs": "GET - Interactive API documentation (Swagger UI)",
+            "/redoc": "GET - Alternative API documentation (ReDoc)",
+            "/health": "GET - Health check endpoint"
+        }
+    }
+
+@app.get("/health")
+async def health():
+    """Health check endpoint for monitoring"""
+    return {"status": "healthy", "service": "MRI Tumor Scanner API"}
+
 @app.post("/scan")
 async def scan(
     img: UploadFile = File(...),

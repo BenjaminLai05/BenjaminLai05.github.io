@@ -5,5 +5,5 @@ ultralytics==8.3.0
 numpy==1.26.4
 opencv-python==4.10.0.84
 python-multipart==0.0.12
-SimpleITK==2.3.0
+SimpleITK==2.5.3
 

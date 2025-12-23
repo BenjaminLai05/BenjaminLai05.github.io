@@ -2,20 +2,21 @@ import React, { useState, useRef, useEffect } from 'react';
 import './ScanHistory.css';
 import { getPatientScanHistory } from '../data/patientScanHistory';
 
-export default function ScanHistory({ selectedPatient = null }) {
+export default function ScanHistory({ selectedPatient = null, additionalScans = [] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
   const dropdownRef = useRef(null);
 
   // Get patient-specific scan history
   const patientHistory = selectedPatient ? getPatientScanHistory(selectedPatient) : { scans: [] };
-  const scans = patientHistory.scans || [];
+  // Merge static scans with additional (dynamically added) scans
+  const allScans = [...(patientHistory.scans || []), ...additionalScans];
   
   // Convert to format expected by component
-  const formattedScans = scans.map((scan, index) => ({
+  const formattedScans = allScans.map((scan, index) => ({
     id: index + 1,
     timestamp: scan.date,
-    fileName: scan.image.split('/').pop(),
+    fileName: scan.fileName || (typeof scan.image === 'string' && scan.image.startsWith('data:') ? 'uploaded_scan.png' : scan.image.split('/').pop()),
     thumbnail: scan.image,
     status: scan.status,
     confidence: scan.confidence,
@@ -168,14 +169,14 @@ export default function ScanHistory({ selectedPatient = null }) {
                           </span>
                         </div>
                         <div className="scan-history__detail-row">
-                          <span className="scan-history__detail-label">Tumor Count:</span>
+                          <span className="scan-history__detail-label">Tumour Count:</span>
                           <span className="scan-history__detail-value">
                             {scan.tumorCount}
                           </span>
                         </div>
                         {scan.tumorAreaPercent > 0 && (
                           <div className="scan-history__detail-row">
-                            <span className="scan-history__detail-label">Tumor Area:</span>
+                            <span className="scan-history__detail-label">Tumour Area:</span>
                             <span className="scan-history__detail-value">
                               {scan.tumorAreaPercent.toFixed(2)}% of image
                             </span>

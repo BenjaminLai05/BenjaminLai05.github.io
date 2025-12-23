@@ -1254,3 +1254,58 @@
 .imageContainer.drag-over .drop-zone-hint {
   color: rgba(100, 181, 246, 0.8);
 }
+
+/* ═══════════════════════════════════════════════════════
+   TOAST NOTIFICATION
+   ═══════════════════════════════════════════════════════ */
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 10000;
+  animation: toastSlideUp 0.3s ease-out;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.toast--success {
+  background: rgba(46, 125, 50, 0.95);
+  color: white;
+  border: 1px solid rgba(129, 199, 132, 0.3);
+}
+
+.toast--error {
+  background: rgba(198, 40, 40, 0.95);
+  color: white;
+  border: 1px solid rgba(239, 154, 154, 0.3);
+}
+
+.toast__icon {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.toast__text {
+  letter-spacing: 0.3px;
+}
+
+@keyframes toastSlideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

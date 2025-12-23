@@ -33,6 +33,9 @@ export default function App() {
   const [tiltDirection, setTiltDirection] = useState(null); // 'left' or 'right' for hover tilt
   const [selectedPatient, setSelectedPatient] = useState(null); // selected patient
   const [expandedContainer, setExpandedContainer] = useState(null); // which container is expanded
+  const [additionalScans, setAdditionalScans] = useState({}); // dynamically added scans per patient
+  const [toastMessage, setToastMessage] = useState(null); // toast notification message
+  const [lastScanResult, setLastScanResult] = useState(null); // stores tumor count from last scan
   const fileInputRef = useRef(null);
 
   // Total number of views in the carousel
@@ -65,7 +68,7 @@ export default function App() {
       setLoading(true);
       console.log('[SCAN] sending', file.name, file.size, 'bytes, confidence:', confidence);
 
-      const res = await fetch(`${API_BASE_URL}/scan`, { method: 'POST', body: fd });
+      const res = await fetch(`${API_BASE_URL}/scan-with-mask`, { method: 'POST', body: fd });
       console.log('[SCAN] response status', res.status, res.statusText);
 
       if (!res.ok) {
@@ -75,10 +78,26 @@ export default function App() {
         return;
       }
 
-      const blob = await res.blob();
-      console.log('[SCAN] blob size', blob.size, 'bytes');
-      setResultUrl(URL.createObjectURL(blob));
-      setShowAnnotated(true);     // flip to "after" once ready
+      const data = await res.json();
+      console.log('[SCAN] detections:', data.num_detections);
+
+      // Convert base64 annotated image to URL
+      const annotatedUrl = `data:image/png;base64,${data.annotated_image}`;
+      setResultUrl(annotatedUrl);
+      setShowAnnotated(true);
+
+      // Store real scan result
+      // Get highest confidence if detections exist, otherwise 0
+      const maxConfidence = data.confidences && data.confidences.length > 0 
+        ? Math.max(...data.confidences) 
+        : 0;
+
+      setLastScanResult({ 
+        tumorCount: data.num_detections, 
+        tumorAreaPercent: 2.5, // Placeholder for now
+        modelConfidence: maxConfidence,
+        fileName: file.name
+      });
     } catch (err) {
       console.error('[SCAN] network/JS error', err);
       alert('Fetch failed → see console');
@@ -95,16 +114,42 @@ export default function App() {
 
   // ─── Add to Patient handler ─────────────────────────────
   const handleAddToPatient = () => {
+    // Check if patient is selected
     if (!selectedPatient) {
-      alert('Please select a patient first');
+      setToastMessage({ type: 'error', text: 'Please select a patient first' });
+      setTimeout(() => setToastMessage(null), 3000);
       return;
     }
+    // Check if there's a scan result
     if (!resultUrl) {
-      alert('Please scan an image first');
+      setToastMessage({ type: 'error', text: 'Please scan an image first' });
+      setTimeout(() => setToastMessage(null), 3000);
       return;
     }
-    // TODO: Implement functionality to add scan to patient's history
-    alert(`Adding scan to ${selectedPatient}'s history...`);
+    
+    // Create new scan entry
+    const currentYear = new Date().getFullYear();
+    const currentDate = new Date().toISOString().split('T')[0];
+    const newScan = {
+      year: currentYear,
+      date: currentDate,
+      image: previewUrl, // Use the original preview image
+      tumorCount: lastScanResult?.tumorCount || 0,
+      tumorAreaPercent: lastScanResult?.tumorAreaPercent || 0,
+      status: (lastScanResult?.tumorCount || 0) > 0 ? 'tumour' : 'clean',
+      confidence: lastScanResult?.modelConfidence || 0,
+      fileName: lastScanResult?.fileName || 'unknown_scan.png'
+    };
+    
+    // Add scan to patient's additional scans
+    setAdditionalScans(prev => ({
+      ...prev,
+      [selectedPatient]: [...(prev[selectedPatient] || []), newScan]
+    }));
+    
+    // Show success message
+    setToastMessage({ type: 'success', text: `Scan added to ${selectedPatient}'s history` });
+    setTimeout(() => setToastMessage(null), 3000);
   };
 
   // ─── Carousel navigation handlers ──────────────────────
@@ -254,7 +299,7 @@ export default function App() {
                       />
                     </div>
                     <div className="scan-history-wrapper">
-                      <ScanHistory selectedPatient={selectedPatient} />
+                      <ScanHistory selectedPatient={selectedPatient} additionalScans={additionalScans[selectedPatient] || []} />
                     </div>
                   </div>
 
@@ -277,10 +322,10 @@ export default function App() {
                   {/* BOTTOM ROW: Chart container */}
                   <div className="bottom-row">
                       <ExpandableContainer
-                        title="Tumor Detection Confidence"
+                        title="Tumour Detection Confidence"
                         onExpand={() => setExpandedContainer('chart')}
                       >
-                        <ConfidenceChartPreview selectedPatient={selectedPatient} />
+                        <ConfidenceChartPreview selectedPatient={selectedPatient} additionalScans={additionalScans[selectedPatient] || []} />
                       </ExpandableContainer>
                   </div>
                 </div>
@@ -290,13 +335,23 @@ export default function App() {
         </div>
       </header>
 
+      {/* Toast notification */}
+      {toastMessage && (
+        <div className={`toast toast--${toastMessage.type}`}>
+          <span className="toast__icon">
+            {toastMessage.type === 'success' ? '✓' : '⚠'}
+          </span>
+          <span className="toast__text">{toastMessage.text}</span>
+        </div>
+      )}
+
       {/* MODAL OVERLAY for expanded containers */}
       {expandedContainer && (
         <ModalOverlay
           title={
             expandedContainer === 'scan-comparison' ? 'Scan Comparison' :
             expandedContainer === 'patient-info' ? 'Patient Information' :
-            expandedContainer === 'chart' ? 'Tumor Detection Confidence' :
+            expandedContainer === 'chart' ? 'Tumour Detection Confidence' :
             expandedContainer === 'info' ? 'Application Guide' :
             'Analysis'
           }
@@ -443,7 +498,7 @@ function ConfidenceChartExpanded({ selectedPatient = null }) {
   return (
     <div className="confidence-chart-expanded">
       <div className="chart-expanded-header">
-        <div className="chart-expanded-title">Tumor Count vs Time</div>
+        <div className="chart-expanded-title">Tumour Count Over Time</div>
         <div className="chart-expanded-subtitle">
           {selectedPatient ? `${selectedPatient}'s scan history` : 'Example data visualization'}
         </div>
@@ -468,7 +523,7 @@ function ConfidenceChartExpanded({ selectedPatient = null }) {
               style={{ fontSize: '12px', fontFamily: 'Inter, sans-serif' }}
               tick={{ fill: 'rgba(255, 255, 255, 0.6)' }}
               domain={[0, 'dataMax + 1']}
-              label={{ value: 'Tumor Count', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: 'rgba(255, 255, 255, 0.7)', fontFamily: 'Inter, sans-serif', fontSize: '13px' } }}
+              label={{ value: 'Tumour Count', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: 'rgba(255, 255, 255, 0.7)', fontFamily: 'Inter, sans-serif', fontSize: '13px' } }}
             />
             <Tooltip 
               contentStyle={{
@@ -505,13 +560,24 @@ function ConfidenceChartExpanded({ selectedPatient = null }) {
 /* --------------------------------------------------------
    CONFIDENCE CHART PREVIEW COMPONENT
 ---------------------------------------------------------*/
-function ConfidenceChartPreview({ selectedPatient = null }) {
+function ConfidenceChartPreview({ selectedPatient = null, additionalScans = [] }) {
   // Get patient-specific data or use example data
   const patientData = selectedPatient ? getPatientChartData(selectedPatient) : [];
   
+  // Add additional scans to the data
+  const additionalChartData = additionalScans.map(scan => ({
+    year: scan.year,
+    date: scan.date,
+    tumors: scan.tumorCount,
+    areaPercent: scan.tumorAreaPercent,
+    confidence: scan.confidence
+  }));
+  
+  const allData = [...patientData, ...additionalChartData];
+  
   // Format data for chart (use years as labels)
-  const chartData = patientData.length > 0 
-    ? patientData.map(scan => ({
+  const chartData = allData.length > 0 
+    ? allData.map(scan => ({
         date: scan.year.toString(),
         tumors: scan.tumors,
         confidence: scan.confidence,
@@ -533,7 +599,7 @@ function ConfidenceChartPreview({ selectedPatient = null }) {
           <line x1="12" y1="20" x2="12" y2="4"></line>
           <line x1="6" y1="20" x2="6" y2="14"></line>
         </svg>
-        <div className="preview-title">Tumor Detection Confidence</div>
+        <div className="preview-title">Tumour Detection Confidence</div>
       </div>
       
       <div className="preview-content">
@@ -553,7 +619,7 @@ function ConfidenceChartPreview({ selectedPatient = null }) {
                 style={{ fontSize: '11px', fontFamily: 'Inter, sans-serif' }}
                 tick={{ fill: 'rgba(255, 255, 255, 0.6)' }}
                 domain={[0, 'dataMax + 1']}
-                label={{ value: 'Tumor Count', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: 'rgba(255, 255, 255, 0.7)', fontFamily: 'Inter, sans-serif', fontSize: '11px' } }}
+                label={{ value: 'Tumour Count', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: 'rgba(255, 255, 255, 0.7)', fontFamily: 'Inter, sans-serif', fontSize: '11px' } }}
               />
               <Tooltip 
                 contentStyle={{
@@ -665,8 +731,13 @@ function ModalOverlay({ title, children, onClose }) {
 ---------------------------------------------------------*/
 function InfoGuide() {
   const handleExemplarDataset = () => {
-    // TODO: Implement exemplar dataset functionality
-    alert('Exemplar Dataset feature coming soon!');
+    // Download the exemplar dataset zip file
+    const link = document.createElement('a');
+    link.href = '/exemplar_dataset.zip';
+    link.download = 'exemplar_dataset.zip';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -674,10 +745,10 @@ function InfoGuide() {
       <div className="info-section">
         <h3 className="info-section-title">What is this Application?</h3>
         <p className="info-text">
-          This is an MRI Tumor Detection and Analysis System designed to assist medical professionals 
-          in identifying and tracking brain tumors in MRI scans. The application uses advanced 
-          machine learning (YOLO) to automatically detect tumors and provide detailed analysis 
-          including tumor count, size, and progression over time.
+          This is an MRI Tumour Detection and Analysis System designed to assist medical professionals 
+          in identifying and tracking brain tumours in MRI scans. The application uses advanced 
+          machine learning (YOLO) to automatically detect tumours and provide detailed analysis 
+          including tumour count, size, and progression over time.
         </p>
       </div>
 

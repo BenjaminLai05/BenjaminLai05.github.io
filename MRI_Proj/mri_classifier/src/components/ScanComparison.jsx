@@ -254,7 +254,7 @@ export default function ScanComparison({ isExpanded = false }) {
       {loading && (
         <div className="loading-indicator">
           <div className="spinner-small"></div>
-          <span>Detecting tumors and comparing scans...</span>
+          <span>Detecting tumours and comparing scans...</span>
         </div>
       )}
 
@@ -289,34 +289,34 @@ export default function ScanComparison({ isExpanded = false }) {
             </div>
           </div>
 
-          {/* Step 2: Tumor Detection */}
+          {/* Step 2: Tumour Detection */}
           {(fixedAnnotated || movingAnnotated) && (
             <div className="process-step">
               <div className="step-header">
                 <div className="step-number">2</div>
-                <div className="step-title">Tumor Detection</div>
+                <div className="step-title">Tumour Detection</div>
               </div>
               <div className="step-content">
                 <div className="step-description-box">
-                  <p>YOLO model detects tumors in both scans and draws bounding boxes around each detected tumor.</p>
-                  <p>Each bounding box represents a detected tumor region (rectangular/square area).</p>
+                  <p>YOLO model detects tumours in both scans and draws bounding boxes around each detected tumor.</p>
+                  <p>Each bounding box represents a detected tumour region (rectangular/square area).</p>
                 </div>
                 <div className="step-images">
                   {fixedAnnotated && (
                     <div className="step-image-item">
-                      <label>Reference Scan - Detected Tumors</label>
+                      <label>Reference Scan - Detected Tumours</label>
                       <img src={fixedAnnotated} alt="Reference scan with detections" />
                       <div className="step-description">
-                        {metrics.fixed_scan?.num_tumors || 0} tumor(s) detected
+                        {metrics.fixed_scan?.num_tumors || 0} tumour(s) detected
                       </div>
                     </div>
                   )}
                   {movingAnnotated && (
                     <div className="step-image-item">
-                      <label>New Scan - Detected Tumors</label>
+                      <label>New Scan - Detected Tumours</label>
                       <img src={movingAnnotated} alt="New scan with detections" />
                       <div className="step-description">
-                        {metrics.moving_scan?.num_tumors || 0} tumor(s) detected
+                        {metrics.moving_scan?.num_tumors || 0} tumour(s) detected
                       </div>
                     </div>
                   )}
@@ -334,24 +334,23 @@ export default function ScanComparison({ isExpanded = false }) {
               </div>
               <div className="step-content">
                 <div className="step-description-box">
-                  <p>Calculate tumor area for each bounding box: <code>area = width × height</code></p>
-                  <p><strong>Normalization:</strong> Tumor sizes are normalized as a percentage of total image area to account for varying image resolutions.</p>
+                  <p>Calculate tumour area for each bounding box: <code>area = width × height</code></p>
+                  <p><strong>Normalization:</strong> Tumour sizes are normalized as a percentage of total image area to account for varying image resolutions.</p>
                   <p>This ensures accurate comparison regardless of image pixel dimensions (e.g., 25×25 vs 75×75 images).</p>
                 </div>
                 {metrics.fixed_scan && metrics.moving_scan && (
                   <div className="step-description-box" style={{ marginTop: '12px' }}>
-                    <p><strong>Reference Scan:</strong> {metrics.fixed_scan.num_tumors} tumor(s)</p>
+                    <p><strong>Reference Scan:</strong> {metrics.fixed_scan.num_tumors} tumour(s)</p>
                     <p style={{ marginLeft: '20px' }}>
                       Total area: {metrics.fixed_scan.total_area_pixels?.toFixed(0) || '0'} pixels² 
                       ({metrics.fixed_scan.total_area_percent?.toFixed(2) || '0.00'}% of image)
                     </p>
-                    <p><strong>New Scan:</strong> {metrics.moving_scan.num_tumors} tumor(s)</p>
+                    <p><strong>New Scan:</strong> {metrics.moving_scan.num_tumors} tumour(s)</p>
                     <p style={{ marginLeft: '20px' }}>
                       Total area: {metrics.moving_scan.total_area_pixels?.toFixed(0) || '0'} pixels² 
                       ({metrics.moving_scan.total_area_percent?.toFixed(2) || '0.00'}% of image)
                     </p>
                   </div>
-                )}
                 )}
               </div>
             </div>
@@ -366,8 +365,8 @@ export default function ScanComparison({ isExpanded = false }) {
               </div>
               <div className="step-content">
                 <div className="step-description-box">
-                  <p>Direct comparison of tumor sizes and counts between scans.</p>
-                  <p>No image alignment is performed - tumors are compared as detected.</p>
+                  <p>Direct comparison of tumour sizes and counts between scans.</p>
+                  <p>No image alignment is performed - tumours are compared as detected.</p>
                   <p><strong>Area Change Calculation:</strong> The normalized area change is calculated as the difference in percentage of image area: <code>Change = New Scan % - Reference Scan %</code></p>
                   <p>For example, if Reference = 5.2% and New = 7.8%, the change is +2.6 percentage points (growth).</p>
                 </div>
@@ -388,7 +387,7 @@ export default function ScanComparison({ isExpanded = false }) {
                           <span className="metric-indicator shrinkage">↓ Shrinkage</span>
                         )}
                       </span>
-                      <div className="metric-hint">Percentage point change in tumor area relative to image size</div>
+                      <div className="metric-hint">Percentage point change in tumour area relative to image size</div>
                     </div>
                     <div className="metric-item">
                       <span className="metric-label">Reference: Total Area</span>
@@ -414,17 +413,17 @@ export default function ScanComparison({ isExpanded = false }) {
                 </div>
 
                 <div className="metrics-section">
-                  <h4>Tumor Count</h4>
+                  <h4>Tumour Count</h4>
                   <div className="metrics-grid">
                     <div className="metric-item">
-                      <span className="metric-label">Tumor Count Change</span>
+                      <span className="metric-label">Tumour Count Change</span>
                       <span className="metric-value">
                         {metrics.comparison.tumor_count_change > 0 ? '+' : ''}
                         {metrics.comparison.tumor_count_change || 0}
                       </span>
                     </div>
                     <div className="metric-item">
-                      <span className="metric-label">New Tumors Detected</span>
+                      <span className="metric-label">New Tumours Detected</span>
                       <span className="metric-value">
                         {metrics.comparison.new_tumors_detected || 0}
                       </span>
@@ -435,12 +434,12 @@ export default function ScanComparison({ isExpanded = false }) {
                 {/* Individual Tumor Details */}
                 {metrics.fixed_scan?.tumors && metrics.fixed_scan.tumors.length > 0 && (
                   <div className="metrics-section">
-                    <h4>Reference Scan Tumors</h4>
+                    <h4>Reference Scan Tumours</h4>
                     <div className="tumor-list">
                       {metrics.fixed_scan.tumors.map((tumor, idx) => (
                         <div key={idx} className="tumor-item">
                           <div className="tumor-info">
-                            <span className="tumor-id">Tumor {tumor.id}</span>
+                            <span className="tumor-id">Tumour {tumor.id}</span>
                             <span className="tumor-details">
                               Area: {tumor.area_percent?.toFixed(2) || tumor.area?.toFixed(0) || '0'}% of image
                               {tumor.area && ` (${tumor.area.toFixed(0)} px²)`} | 
@@ -456,7 +455,7 @@ export default function ScanComparison({ isExpanded = false }) {
 
                 {metrics.moving_scan?.tumors && metrics.moving_scan.tumors.length > 0 && (
                   <div className="metrics-section">
-                    <h4>New Scan Tumors</h4>
+                    <h4>New Scan Tumours</h4>
                     <div className="tumor-list">
                       {metrics.moving_scan.tumors.map((tumor, idx) => {
                         const isNew = metrics.comparison.new_tumors?.some(nt => nt.id === tumor.id);
@@ -464,7 +463,7 @@ export default function ScanComparison({ isExpanded = false }) {
                           <div key={idx} className={`tumor-item ${isNew ? 'new-tumor' : ''}`}>
                             <div className="tumor-info">
                               <span className="tumor-id">
-                                Tumor {tumor.id}
+                                Tumour {tumor.id}
                                 {isNew && <span className="new-badge">NEW</span>}
                               </span>
                               <span className="tumor-details">

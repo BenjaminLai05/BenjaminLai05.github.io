@@ -372,3 +372,107 @@
   }
 }
 
+/* Editable Fields */
+.patient-age-gender-editable {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.age-separator {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.editable-field {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.editable-field:focus {
+  outline: none;
+  border-color: rgba(100, 181, 246, 0.6);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 2px rgba(100, 181, 246, 0.2);
+}
+
+.editable-field--small {
+  width: 60px;
+  text-align: center;
+}
+
+.editable-field::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Narrative Edit Hint */
+.narrative-edit-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(100, 181, 246, 0.1);
+  border: 1px solid rgba(100, 181, 246, 0.2);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  color: rgba(100, 181, 246, 0.9);
+  font-size: 12px;
+}
+
+.narrative-edit-hint svg {
+  flex-shrink: 0;
+}
+
+/* Narrative Textarea */
+.narrative-textarea {
+  flex: 1;
+  min-height: 200px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: 'Inter', sans-serif;
+  resize: vertical;
+  transition: all 0.2s ease;
+}
+
+.narrative-textarea:focus {
+  outline: none;
+  border-color: rgba(100, 181, 246, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 2px rgba(100, 181, 246, 0.15);
+}
+
+.narrative-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.narrative-textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.narrative-textarea::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.narrative-textarea::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.narrative-textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}

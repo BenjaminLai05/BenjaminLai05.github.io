@@ -14,6 +14,7 @@ import { getPatientChartData } from './data/patientScanHistory';
 import ScanComparison from './components/ScanComparison';
 import PatientInfo from './components/PatientInfo';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import API_BASE_URL from './config';
 import './App.css';
 import './index.css';
 
@@ -64,7 +65,7 @@ export default function App() {
       setLoading(true);
       console.log('[SCAN] sending', file.name, file.size, 'bytes, confidence:', confidence);
 
-      const res = await fetch('/scan', { method: 'POST', body: fd });
+      const res = await fetch(`${API_BASE_URL}/scan`, { method: 'POST', body: fd });
       console.log('[SCAN] response status', res.status, res.statusText);
 
       if (!res.ok) {

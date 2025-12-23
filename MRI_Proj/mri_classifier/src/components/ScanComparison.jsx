@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import API_BASE_URL from '../config';
 import './ScanComparison.css';
 
 /**
@@ -60,7 +61,7 @@ export default function ScanComparison({ isExpanded = false }) {
       formData.append('confidence', '0.5');
       formData.append('return_annotated', 'true');
 
-      const response = await fetch('/compare-scans', {
+      const response = await fetch(`${API_BASE_URL}/compare-scans`, {
         method: 'POST',
         body: formData,
       });

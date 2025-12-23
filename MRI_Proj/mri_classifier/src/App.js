@@ -161,7 +161,7 @@ export default function App() {
             <div
               className="carousel-container"
               style={{
-                transform: `translateX(${-currentView * 100}vw)`,
+                transform: `translateX(${-currentView * 100}%)`,
               }}
             >
               {/* View 0: Original content */}
@@ -243,43 +243,46 @@ export default function App() {
 
               {/* View 1: Patient and Scan History */}
               <div className="carousel-view carousel-view--patient-history">
-                {/* TOP ROW: Patient Selector and Scan History */}
-                <div className="patient-history-top-row">
-                  <div className="patient-selector-wrapper">
-                    <PatientSelector
-                      selectedPatient={selectedPatient}
-                      onPatientChange={setSelectedPatient}
-                    />
+                {/* Content wrapper for centering */}
+                <div className="patient-history-content">
+                  {/* TOP ROW: Patient Selector and Scan History */}
+                  <div className="patient-history-top-row">
+                    <div className="patient-selector-wrapper">
+                      <PatientSelector
+                        selectedPatient={selectedPatient}
+                        onPatientChange={setSelectedPatient}
+                      />
+                    </div>
+                    <div className="scan-history-wrapper">
+                      <ScanHistory selectedPatient={selectedPatient} />
+                    </div>
                   </div>
-                  <div className="scan-history-wrapper">
-                    <ScanHistory selectedPatient={selectedPatient} />
-                  </div>
-                </div>
 
-                {/* MIDDLE ROW: Two side-by-side empty containers */}
-                <div className="middle-row">
-                  <ExpandableContainer
-                    title="Scan Comparison"
-                    onExpand={() => setExpandedContainer('scan-comparison')}
-                  >
-                    <ScanComparison isExpanded={false} />
-                  </ExpandableContainer>
-                  <ExpandableContainer
-                    title="Patient Information"
-                    onExpand={() => setExpandedContainer('patient-info')}
-                  >
-                    <PatientInfo selectedPatient={selectedPatient} isExpanded={false} />
-                  </ExpandableContainer>
-                </div>
-
-                {/* BOTTOM ROW: Chart container */}
-                <div className="bottom-row">
+                  {/* MIDDLE ROW: Two side-by-side empty containers */}
+                  <div className="middle-row">
                     <ExpandableContainer
-                      title="Tumor Detection Confidence"
-                      onExpand={() => setExpandedContainer('chart')}
+                      title="Scan Comparison"
+                      onExpand={() => setExpandedContainer('scan-comparison')}
                     >
-                      <ConfidenceChartPreview selectedPatient={selectedPatient} />
+                      <ScanComparison isExpanded={false} />
                     </ExpandableContainer>
+                    <ExpandableContainer
+                      title="Patient Information"
+                      onExpand={() => setExpandedContainer('patient-info')}
+                    >
+                      <PatientInfo selectedPatient={selectedPatient} isExpanded={false} />
+                    </ExpandableContainer>
+                  </div>
+
+                  {/* BOTTOM ROW: Chart container */}
+                  <div className="bottom-row">
+                      <ExpandableContainer
+                        title="Tumor Detection Confidence"
+                        onExpand={() => setExpandedContainer('chart')}
+                      >
+                        <ConfidenceChartPreview selectedPatient={selectedPatient} />
+                      </ExpandableContainer>
+                  </div>
                 </div>
               </div>
             </div>

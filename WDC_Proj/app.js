@@ -17,12 +17,6 @@ var organizationsRouter = require('./routes/organizations');
 
 var mysql = require('mysql2');
 
-console.log('Database Configuration:');
-console.log('Host:', process.env.DB_HOST || process.env.MYSQLHOST || '127.0.0.1');
-console.log('Port:', process.env.DB_PORT || process.env.MYSQLPORT || 3306);
-console.log('User:', process.env.DB_USER || process.env.MYSQLUSER || 'root');
-console.log('Database:', process.env.DB_NAME || process.env.MYSQLDATABASE || 'webapp_database');
-
 var dbConnectionPool = mysql.createPool({
     host: process.env.DB_HOST || process.env.MYSQLHOST || '127.0.0.1',
     port: process.env.DB_PORT || process.env.MYSQLPORT || 3306,
@@ -124,17 +118,6 @@ app.use('/organisation_manage.html', checkManagerSession, (req, res) => {
 app.use(function(req, res, next) {
     req.pool = dbConnectionPool;
     next();
-});
-
-// Test database connection on startup
-dbConnectionPool.getConnection((err, connection) => {
-    if (err) {
-        console.error('CRITICAL: Database connection failed during startup!');
-        console.error('Error details:', err);
-    } else {
-        console.log('SUCCESS: Database connected successfully.');
-        connection.release();
-    }
 });
 
 // Debugging middleware to log the current user session

@@ -15,7 +15,7 @@ var managersRouter = require('./routes/managers');
 var adminsRouter = require('./routes/admins');
 var organizationsRouter = require('./routes/organizations');
 
-var mysql = require('mysql');
+var mysql = require('mysql2');
 
 var dbConnectionPool = mysql.createPool({
     host: process.env.DB_HOST || '127.0.0.1',

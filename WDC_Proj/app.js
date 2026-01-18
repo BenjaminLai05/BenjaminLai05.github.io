@@ -17,6 +17,12 @@ var organizationsRouter = require('./routes/organizations');
 
 var mysql = require('mysql2');
 
+console.log('Database Configuration:');
+console.log('Host:', process.env.DB_HOST || process.env.MYSQLHOST || '127.0.0.1');
+console.log('Port:', process.env.DB_PORT || process.env.MYSQLPORT || 3306);
+console.log('User:', process.env.DB_USER || process.env.MYSQLUSER || 'root');
+console.log('Database:', process.env.DB_NAME || process.env.MYSQLDATABASE || 'webapp_database');
+
 var dbConnectionPool = mysql.createPool({
     host: process.env.DB_HOST || process.env.MYSQLHOST || '127.0.0.1',
     port: process.env.DB_PORT || process.env.MYSQLPORT || 3306,

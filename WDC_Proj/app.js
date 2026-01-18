@@ -26,6 +26,7 @@ var dbConnectionPool = mysql.createPool({
 });
 
 var app = express();
+app.set('trust proxy', 1);
 
 // Logger
 app.use(logger('dev'));

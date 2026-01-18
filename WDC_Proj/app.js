@@ -120,6 +120,17 @@ app.use(function(req, res, next) {
     next();
 });
 
+// Test database connection on startup
+dbConnectionPool.getConnection((err, connection) => {
+    if (err) {
+        console.error('CRITICAL: Database connection failed during startup!');
+        console.error('Error details:', err);
+    } else {
+        console.log('SUCCESS: Database connected successfully.');
+        connection.release();
+    }
+});
+
 // Debugging middleware to log the current user session
 app.use(function(req, res, next) {
     console.log("The current user is: " + req.session.user_id);

@@ -18,11 +18,11 @@ var organizationsRouter = require('./routes/organizations');
 var mysql = require('mysql2');
 
 var dbConnectionPool = mysql.createPool({
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: process.env.DB_PORT || 3306,
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || 'admin123',
-    database: process.env.DB_NAME || 'webapp_database',
+    host: process.env.DB_HOST || process.env.MYSQLHOST || '127.0.0.1',
+    port: process.env.DB_PORT || process.env.MYSQLPORT || 3306,
+    user: process.env.DB_USER || process.env.MYSQLUSER || 'root',
+    password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || 'admin123',
+    database: process.env.DB_NAME || process.env.MYSQLDATABASE || 'webapp_database',
 });
 
 var app = express();

@@ -8,12 +8,12 @@
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Benjamin Lai - Portfolio">
-    <meta property="og:description" content="Web Designer, Music Artist & Photographer. I spend most of my time thinking about Tea.">
+    <meta property="og:description" content="Computer Science graduate from Adelaide University, majoring in Data Science. Portfolio showcasing projects in data science, web development, and machine learning.">
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Benjamin Lai - Portfolio">
-    <meta name="twitter:description" content="Web Designer, Music Artist & Photographer. I spend most of my time thinking about Tea.">
+    <meta name="twitter:description" content="Computer Science graduate from Adelaide University, majoring in Data Science. Portfolio showcasing projects in data science, web development, and machine learning.">
 
     <meta name="robots" content="max-image-preview:large">
 
@@ -49,7 +49,7 @@
                 <span class="word">Lai.</span>
             </h1>
 
-            <h2 class="heading-secondary desktop-only">
+            <h2 class="heading-secondary">
                 <span class="word">I'm</span>
                 <span class="word">a</span>
                         <span class="word">Computer</span>
@@ -74,30 +74,7 @@
                         <span class="word">data.</span>
             </h2>
 
-            <h2 class="heading-secondary mobile-only">
-                <span class="word">I'm</span>
-                <span class="word">a</span>
-                        <span class="word">Computer</span>
-                        <span class="word">Science</span>
-                        <span class="word">graduate</span>
-                        <span class="word">from</span>
-                        <span class="word">Adelaide</span>
-                        <span class="word">University,</span>
-                        <span class="word">majoring</span>
-                        <span class="word">in</span>
-                        <span class="word">Data</span>
-                        <span class="word">Science.</span>
-                <span class="word">I</span>
-                        <span class="word">enjoy</span>
-                        <span class="word">building,</span>
-                        <span class="word">solving</span>
-                        <span class="word">and</span>
-                        <span class="word">all</span>
-                        <span class="word">things</span>
-                        <span class="word">related</span>
-                        <span class="word">to</span>
-                        <span class="word">data.</span>
-            </h2>
+
 
             <!-- Social Links -->
             <nav class="social-links" aria-label="Social media links">
@@ -125,35 +102,7 @@
 
         <!-- Projects Cards -->
         <section class="ventures-section" id="projects-section">
-            <!-- First Card - MRI Brain MRI Scanner -->
-            <article class="venture-card">
-                <div class="card-left">
-                    <div class="card-logo">
-                        <img src="images/brainicon.png" alt="Brain Icon">
-                    </div>
-                    <div class="card-content">
-                        <h3>MRI Brain Scanner</h3>
-                        <p>A medical imaging tool that detects tumors in MRI scans using a computer vision model trained by manually labeling unstructured data within a dataset, with features for comparing scans over time to track tumor progression.</p>
-                    </div>
-                    <a href="https://lighthearted-monstera-157cf6.netlify.app/" target="_blank" rel="noopener" class="btn-visit">
-                        <span>Visit Site</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </a>
-                </div>
-                <div class="card-right">
-                    <div class="tech-list-container">
-                        <div class="tech-list-divider"></div>
-                        <div class="background-content">
-                            <h4 class="background-heading">Background:</h4>
-                            <p class="background-text">This was an individual project inspired by a desire to understand how image recognition works and apply it to solve real-world problems. It provided an opportunity to work with creating labeled data from unlabeled, non-numerical image data.</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Second Card - NBA Algorithm Predictor -->
+            <!-- First Card - NBA Algorithm Predictor -->
             <article class="venture-card">
                 <div class="card-left">
                     <div class="card-logo card-logo-zoomed-out">
@@ -161,9 +110,11 @@
                     </div>
                     <div class="card-content">
                         <h3>NBA Algorithm Predictor</h3>
-                        <p>A program which web scrapes Basketball-Reference to extract game results and player statistics by automation. It is able to preprocess data by removing, cleaning, parsing, filtering and merging multiple sources of wrangled datasets in order to backtest predictions by using a forward game-by-game rating system which evaluates accuracy by comparing predicted winners to actual results.</p>
+                        <p>A program which web scrapes Basketball-Reference to extract game results and player statistics by automation. It is able to preprocess data by removing, cleaning, parsing, filtering and merging multiple sources of wrangled datasets in order to backtest predictions by using a forward game-by-game rating system which evaluates accuracy by comparing predictions to the real results.
+                            <br><br>Note: the repository for my algorithm is not public. However, the dashboard of results is available for download below.
+                        </p>
                     </div>
-                    <a href="BI_Dashboard/NBA_Elo_Dashboard.pbix" download="NBA_Elo_Dashboard.pbix" target="_blank" rel="noopener" class="btn-visit">
+                    <a href="BI_Dashboard/NBA_Elo_Dashboard.pbix" download="NBA_Elo_Dashboard.pbix" class="btn-visit">
                         <span>Download BI Dashboard</span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M7 17L17 7M17 7H7M17 7V17"/>
@@ -181,7 +132,7 @@
                 </div>
             </article>
 
-            <!-- Third Card - WDC Org Website -->
+            <!-- Second Card - WDC Org Website -->
             <article class="venture-card">
                 <div class="card-left">
                     <div class="card-logo contra-logo">
@@ -191,9 +142,38 @@
                     </div>
                     <div class="card-content">
                         <h3>WDC Org Website</h3>
-                        <p>A volunteer organization platform built with Node.js, Express, and MySQL that connects volunteers with organizations, enabling users to discover opportunities, join causes, track event attendance, and receive email notifications. This demonstration project allows organizations to create events, share updates, and manage volunteer communities through an intuitive web interface.</p>
+                        <p>A volunteer organisation platform built with Node.js, Express, and MySQL that connects volunteers with organisations, enabling users to discover opportunities, join causes, track event attendance, and receive email notifications. This demonstration project allows organisations to create events, share updates, and manage volunteer communities through an intuitive web interface.</p>
                     </div>
-                    <a href="https://jade-meringue-f6b06d.netlify.app/" target="_blank" rel="noopener" class="btn-visit">
+                    <a href="https://benjaminlai05githubio-production.up.railway.app/" target="_blank" rel="noopener" class="btn-visit">
+                        <span>Visit Site</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="card-right">
+                    <div class="tech-list-container">
+                        <div class="tech-list-divider"></div>
+                        <div class="background-content" style="position: relative;">
+                            <a href="WDC_Proj/README.md" download="WDC_README.md" style="position: absolute; top: 0; right: 0; font-size: 14px; color: #666; text-decoration: underline; white-space: nowrap;">More Information</a>
+                            <h4 class="background-heading">Background:</h4>
+                            <p class="background-text">This was a group project completed during my penultimate year at Adelaide University. Working with 3 other students, I focused on the login section and the backend authentication system, implementing user sign-in functionality using SQL queries to securely validate credentials against the MySQL database.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Third Card - MRI Brain Scanner -->
+            <article class="venture-card">
+                <div class="card-left">
+                    <div class="card-logo">
+                        <img src="images/brainicon.png" alt="Brain Icon">
+                    </div>
+                    <div class="card-content">
+                        <h3>MRI Brain Scanner</h3>
+                        <p>A medical imaging tool that detects tumours in MRI scans using a computer vision model trained by manually labelling unstructured data within a dataset, with features for comparing scans over time to track tumour progression.</p>
+                    </div>
+                    <a href="https://lighthearted-monstera-157cf6.netlify.app/" target="_blank" rel="noopener" class="btn-visit">
                         <span>Visit Site</span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M7 17L17 7M17 7H7M17 7V17"/>
@@ -205,7 +185,7 @@
                         <div class="tech-list-divider"></div>
                         <div class="background-content">
                             <h4 class="background-heading">Background:</h4>
-                            <p class="background-text">This was a group project completed during my penultimate year at Adelaide University. Working with 3 other students, I focused on the login section and the backend authentication system, implementing user sign-in functionality using SQL queries to securely validate credentials against the MySQL database.</p>
+                            <p class="background-text">This was an individual project inspired by a desire to understand how image recognition works and apply it to solve real-world problems. It provided an opportunity to work with creating labeled data from unlabeled, non-numerical image data.</p>
                         </div>
                     </div>
                 </div>

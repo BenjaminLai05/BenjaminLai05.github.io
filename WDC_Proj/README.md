@@ -1,26 +1,10 @@
-# Template Repository for COMP SCI 2207/7207 Web & Database Computing (2023 Semester 1)
-
-Contains environment files for WDC 2023. Copy this template for a general sandbox.
-
-Auto commit/push/sync to Github is disabled by default in this template repository.
-Enable the GitDoc extension to use this fucntionality (either in your VSCode settings, or in the Dev Container settings)
-
-To load Database;
-mysql < webapp_database.sql
-
 Login detail for nodeMailer emails; <br/>
 Username: alliumnotifications@gmail.com <br/>
 Password: WDCwebapp2024@
 
-Used libraries; <br/>
-npm install express cookie-parser morgan express-session validator multer express-slow-down
-
 Notes;
 Passwords are case-sensitive, everything else is not.
 If you want to test NodeMailer you will need to sign up with a valid email, subscribe to an organization and post as a manager in said organization (Admins are automatically managers for every organization)
-
-If landing_page.html displays loading... for too long restart the server, 
-(unreproducible bug, varies from system to system, tried to mitigate this by adding delays in responses, but slower computers still suffer)
 
 Important Logins;
 

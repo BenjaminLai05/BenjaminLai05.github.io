@@ -85,7 +85,7 @@ function animateSocialLinks() {
     const socialLinks = document.querySelectorAll('.social-link');
     if (socialLinks.length === 0) return;
 
-    const delays = [0.7, 0.75]; // Staggered delays in seconds (2 icons: LinkedIn, Instagram)
+    const delays = [0.7, 0.75, 0.8]; // Staggered delays in seconds (3 icons: GitHub, LinkedIn, Instagram)
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -264,10 +264,10 @@ function handleTabClick(clickedButton, allButtons) {
             // Animate project cards immediately with staggered delays when tab is clicked
             const projectCards = document.querySelectorAll('.venture-card');
             const cardStaggerDelay = 100; // 100ms delay between each card
-            
+
             // Remove animated class to reset
             projectCards.forEach(card => card.classList.remove('animated'));
-            
+
             // Animate cards with staggered delays
             setTimeout(() => {
                 projectCards.forEach((card, index) => {
@@ -285,10 +285,10 @@ function handleTabClick(clickedButton, allButtons) {
             // Animate tech cards immediately with staggered delays when tab is clicked
             const techCards = document.querySelectorAll('.tech-card');
             const cardStaggerDelay = 50; // 50ms delay between each card
-            
+
             // Remove animated class to reset
             techCards.forEach(card => card.classList.remove('animated'));
-            
+
             // Animate cards with staggered delays
             setTimeout(() => {
                 techCards.forEach((card, index) => {

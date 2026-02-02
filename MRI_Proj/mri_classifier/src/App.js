@@ -88,12 +88,12 @@ export default function App() {
 
       // Store real scan result
       // Get highest confidence if detections exist, otherwise 0
-      const maxConfidence = data.confidences && data.confidences.length > 0 
-        ? Math.max(...data.confidences) 
+      const maxConfidence = data.confidences && data.confidences.length > 0
+        ? Math.max(...data.confidences)
         : 0;
 
-      setLastScanResult({ 
-        tumorCount: data.num_detections, 
+      setLastScanResult({
+        tumorCount: data.num_detections,
         tumorAreaPercent: 2.5, // Placeholder for now
         modelConfidence: maxConfidence,
         fileName: file.name
@@ -126,7 +126,7 @@ export default function App() {
       setTimeout(() => setToastMessage(null), 3000);
       return;
     }
-    
+
     // Create new scan entry
     const currentYear = new Date().getFullYear();
     const currentDate = new Date().toISOString().split('T')[0];
@@ -140,13 +140,13 @@ export default function App() {
       confidence: lastScanResult?.modelConfidence || 0,
       fileName: lastScanResult?.fileName || 'unknown_scan.png'
     };
-    
+
     // Add scan to patient's additional scans
     setAdditionalScans(prev => ({
       ...prev,
       [selectedPatient]: [...(prev[selectedPatient] || []), newScan]
     }));
-    
+
     // Show success message
     setToastMessage({ type: 'success', text: `Scan added to ${selectedPatient}'s history` });
     setTimeout(() => setToastMessage(null), 3000);
@@ -245,8 +245,8 @@ export default function App() {
                 <SidePanel
                   side="left"
                   buttons={[
-                    { 
-                      label: 'Upload', 
+                    {
+                      label: 'Upload',
                       onClick: openFilePicker,
                       disabled: !selectedPatient
                     },
@@ -321,12 +321,12 @@ export default function App() {
 
                   {/* BOTTOM ROW: Chart container */}
                   <div className="bottom-row">
-                      <ExpandableContainer
-                        title="Tumour Detection Confidence"
-                        onExpand={() => setExpandedContainer('chart')}
-                      >
-                        <ConfidenceChartPreview selectedPatient={selectedPatient} additionalScans={additionalScans[selectedPatient] || []} />
-                      </ExpandableContainer>
+                    <ExpandableContainer
+                      title="Tumour Detection Confidence"
+                      onExpand={() => setExpandedContainer('chart')}
+                    >
+                      <ConfidenceChartPreview selectedPatient={selectedPatient} additionalScans={additionalScans[selectedPatient] || []} />
+                    </ExpandableContainer>
                   </div>
                 </div>
               </div>
@@ -350,10 +350,10 @@ export default function App() {
         <ModalOverlay
           title={
             expandedContainer === 'scan-comparison' ? 'Scan Comparison' :
-            expandedContainer === 'patient-info' ? 'Patient Information' :
-            expandedContainer === 'chart' ? 'Tumour Detection Confidence' :
-            expandedContainer === 'info' ? 'Application Guide' :
-            'Analysis'
+              expandedContainer === 'patient-info' ? 'Patient Information' :
+                expandedContainer === 'chart' ? 'Tumour Detection Confidence' :
+                  expandedContainer === 'info' ? 'Application Guide' :
+                    'Analysis'
           }
           onClose={() => setExpandedContainer(null)}
         >
@@ -478,22 +478,22 @@ function downloadImage(url) {
 function ConfidenceChartExpanded({ selectedPatient = null }) {
   // Get patient-specific data or use example data
   const patientData = selectedPatient ? getPatientChartData(selectedPatient) : [];
-  
+
   // Format data for chart (use years as labels)
-  const chartData = patientData.length > 0 
+  const chartData = patientData.length > 0
     ? patientData.map(scan => ({
-        date: scan.year.toString(),
-        tumors: scan.tumors,
-        confidence: scan.confidence,
-        areaPercent: scan.areaPercent
-      }))
+      date: scan.year.toString(),
+      tumors: scan.tumors,
+      confidence: scan.confidence,
+      areaPercent: scan.areaPercent
+    }))
     : [
-        { date: '2020', tumors: 1, confidence: 0.75 },
-        { date: '2021', tumors: 2, confidence: 0.82 },
-        { date: '2022', tumors: 3, confidence: 0.88 },
-        { date: '2023', tumors: 4, confidence: 0.91 },
-        { date: '2024', tumors: 5, confidence: 0.94 },
-      ];
+      { date: '2020', tumors: 1, confidence: 0.75 },
+      { date: '2021', tumors: 2, confidence: 0.82 },
+      { date: '2022', tumors: 3, confidence: 0.88 },
+      { date: '2023', tumors: 4, confidence: 0.91 },
+      { date: '2024', tumors: 5, confidence: 0.94 },
+    ];
 
   return (
     <div className="confidence-chart-expanded">
@@ -503,29 +503,29 @@ function ConfidenceChartExpanded({ selectedPatient = null }) {
           {selectedPatient ? `${selectedPatient}'s scan history` : 'Example data visualization'}
         </div>
       </div>
-      
+
       <div className="chart-expanded-content">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 10, right: 20, bottom: 50, left: 50 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
-            <XAxis 
-              dataKey="date" 
+            <XAxis
+              dataKey="date"
               stroke="rgba(255, 255, 255, 0.6)"
               style={{ fontSize: '12px', fontFamily: 'Inter, sans-serif' }}
               tick={{ fill: 'rgba(255, 255, 255, 0.6)' }}
               angle={-45}
               textAnchor="end"
               height={60}
-                label={{ value: 'Year', position: 'insideBottom', offset: -10, style: { textAnchor: 'middle', fill: 'rgba(255, 255, 255, 0.7)', fontFamily: 'Inter, sans-serif', fontSize: '13px' } }}
+              label={{ value: 'Year', position: 'insideBottom', offset: -10, style: { textAnchor: 'middle', fill: 'rgba(255, 255, 255, 0.7)', fontFamily: 'Inter, sans-serif', fontSize: '13px' } }}
             />
-            <YAxis 
+            <YAxis
               stroke="rgba(255, 255, 255, 0.6)"
               style={{ fontSize: '12px', fontFamily: 'Inter, sans-serif' }}
               tick={{ fill: 'rgba(255, 255, 255, 0.6)' }}
               domain={[0, 'dataMax + 1']}
               label={{ value: 'Tumour Count', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: 'rgba(255, 255, 255, 0.7)', fontFamily: 'Inter, sans-serif', fontSize: '13px' } }}
             />
-            <Tooltip 
+            <Tooltip
               contentStyle={{
                 backgroundColor: 'rgba(20, 20, 20, 0.98)',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -540,10 +540,10 @@ function ConfidenceChartExpanded({ selectedPatient = null }) {
               itemStyle={{ color: 'rgba(100, 181, 246, 0.9)' }}
               cursor={{ stroke: 'rgba(100, 181, 246, 0.4)', strokeWidth: 1, strokeDasharray: '3 3' }}
             />
-            <Line 
-              type="monotone" 
-              dataKey="tumors" 
-              stroke="rgba(100, 181, 246, 0.9)" 
+            <Line
+              type="monotone"
+              dataKey="tumors"
+              stroke="rgba(100, 181, 246, 0.9)"
               strokeWidth={3}
               dot={{ fill: 'rgba(100, 181, 246, 0.9)', r: 5, strokeWidth: 2, stroke: 'rgba(20, 20, 20, 0.95)' }}
               activeDot={{ r: 7, fill: 'rgba(100, 181, 246, 1)', stroke: 'rgba(255, 255, 255, 0.4)', strokeWidth: 2 }}
@@ -563,7 +563,7 @@ function ConfidenceChartExpanded({ selectedPatient = null }) {
 function ConfidenceChartPreview({ selectedPatient = null, additionalScans = [] }) {
   // Get patient-specific data or use example data
   const patientData = selectedPatient ? getPatientChartData(selectedPatient) : [];
-  
+
   // Add additional scans to the data
   const additionalChartData = additionalScans.map(scan => ({
     year: scan.year,
@@ -572,24 +572,24 @@ function ConfidenceChartPreview({ selectedPatient = null, additionalScans = [] }
     areaPercent: scan.tumorAreaPercent,
     confidence: scan.confidence
   }));
-  
+
   const allData = [...patientData, ...additionalChartData];
-  
+
   // Format data for chart (use years as labels)
-  const chartData = allData.length > 0 
+  const chartData = allData.length > 0
     ? allData.map(scan => ({
-        date: scan.year.toString(),
-        tumors: scan.tumors,
-        confidence: scan.confidence,
-        areaPercent: scan.areaPercent
-      }))
+      date: scan.year.toString(),
+      tumors: scan.tumors,
+      confidence: scan.confidence,
+      areaPercent: scan.areaPercent
+    }))
     : [
-        { date: '2020', tumors: 1, confidence: 0.75 },
-        { date: '2021', tumors: 2, confidence: 0.82 },
-        { date: '2022', tumors: 3, confidence: 0.88 },
-        { date: '2023', tumors: 4, confidence: 0.91 },
-        { date: '2024', tumors: 5, confidence: 0.94 },
-      ];
+      { date: '2020', tumors: 1, confidence: 0.75 },
+      { date: '2021', tumors: 2, confidence: 0.82 },
+      { date: '2022', tumors: 3, confidence: 0.88 },
+      { date: '2023', tumors: 4, confidence: 0.91 },
+      { date: '2024', tumors: 5, confidence: 0.94 },
+    ];
 
   return (
     <div className="confidence-chart-preview">
@@ -601,27 +601,27 @@ function ConfidenceChartPreview({ selectedPatient = null, additionalScans = [] }
         </svg>
         <div className="preview-title">Tumour Detection Confidence</div>
       </div>
-      
+
       <div className="preview-content">
         <div className="chart-container">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 5, right: 40, bottom: 25, left: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
-              <XAxis 
-                dataKey="date" 
+              <XAxis
+                dataKey="date"
                 stroke="rgba(255, 255, 255, 0.6)"
                 style={{ fontSize: '11px', fontFamily: 'Inter, sans-serif' }}
                 tick={{ fill: 'rgba(255, 255, 255, 0.6)' }}
                 label={{ value: 'Year', position: 'insideBottom', offset: -5, style: { textAnchor: 'middle', fill: 'rgba(255, 255, 255, 0.7)', fontFamily: 'Inter, sans-serif', fontSize: '11px' } }}
               />
-              <YAxis 
+              <YAxis
                 stroke="rgba(255, 255, 255, 0.6)"
                 style={{ fontSize: '11px', fontFamily: 'Inter, sans-serif' }}
                 tick={{ fill: 'rgba(255, 255, 255, 0.6)' }}
                 domain={[0, 'dataMax + 1']}
                 label={{ value: 'Tumour Count', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: 'rgba(255, 255, 255, 0.7)', fontFamily: 'Inter, sans-serif', fontSize: '11px' } }}
               />
-              <Tooltip 
+              <Tooltip
                 contentStyle={{
                   backgroundColor: 'rgba(20, 20, 20, 0.95)',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -633,10 +633,10 @@ function ConfidenceChartPreview({ selectedPatient = null, additionalScans = [] }
                 labelStyle={{ color: 'rgba(255, 255, 255, 0.7)' }}
                 cursor={{ stroke: 'rgba(100, 181, 246, 0.4)', strokeWidth: 1, strokeDasharray: '3 3' }}
               />
-              <Line 
-                type="monotone" 
-                dataKey="tumors" 
-                stroke="rgba(100, 181, 246, 0.9)" 
+              <Line
+                type="monotone"
+                dataKey="tumors"
+                stroke="rgba(100, 181, 246, 0.9)"
                 strokeWidth={2.5}
                 dot={{ fill: 'rgba(100, 181, 246, 0.9)', r: 4, strokeWidth: 2, stroke: 'rgba(20, 20, 20, 0.95)' }}
                 activeDot={{ r: 6, fill: 'rgba(100, 181, 246, 1)', stroke: 'rgba(255, 255, 255, 0.3)', strokeWidth: 2 }}
@@ -745,9 +745,9 @@ function InfoGuide() {
       <div className="info-section">
         <h3 className="info-section-title">What is this Application?</h3>
         <p className="info-text">
-          This is an MRI Tumour Detection and Analysis System designed to assist medical professionals 
-          in identifying and tracking brain tumours in MRI scans. The application uses advanced 
-          machine learning (YOLO) to automatically detect tumours and provide detailed analysis 
+          This is an MRI Tumour Detection and Analysis System designed to assist medical professionals
+          in identifying and tracking brain tumours in MRI scans. The application uses advanced
+          machine learning (YOLO) to automatically detect tumours and provide detailed analysis
           including tumour count, size, and progression over time.
         </p>
       </div>
@@ -772,44 +772,44 @@ function InfoGuide() {
           <div className="info-step">
             <span className="step-number">1</span>
             <div className="step-content">
-              <strong>Select a Patient:</strong> Choose a patient from the dropdown menu at the top 
+              <strong>Select a Patient:</strong> Choose a patient from the dropdown menu at the top
               of the main panel. This will load their scan history and enable all features.
             </div>
           </div>
           <div className="info-step">
             <span className="step-number">2</span>
             <div className="step-content">
-              <strong>Upload an Image:</strong> Click the "Upload" button to select an MRI scan 
+              <strong>Upload an Image:</strong> Click the "Upload" button to select an MRI scan
               image from your device. The image will appear in the preview area.
             </div>
           </div>
           <div className="info-step">
             <span className="step-number">3</span>
             <div className="step-content">
-              <strong>Adjust Confidence Threshold:</strong> Use the slider above the image to set 
-              the detection sensitivity (0.0 to 1.0). Higher values require more confidence for 
+              <strong>Adjust Confidence Threshold:</strong> Use the slider above the image to set
+              the detection sensitivity (0.0 to 1.0). Higher values require more confidence for
               tumor detection.
             </div>
           </div>
           <div className="info-step">
             <span className="step-number">4</span>
             <div className="step-content">
-              <strong>Scan for Tumors:</strong> Click the "Scan" button to analyze the image. The 
-              system will detect tumors and display an annotated version with bounding boxes 
+              <strong>Scan for Tumors:</strong> Click the "Scan" button to analyze the image. The
+              system will detect tumors and display an annotated version with bounding boxes
               around detected areas.
             </div>
           </div>
           <div className="info-step">
             <span className="step-number">5</span>
             <div className="step-content">
-              <strong>Toggle Views:</strong> Use the toggle button to switch between the original 
+              <strong>Toggle Views:</strong> Use the toggle button to switch between the original
               and annotated images.
             </div>
           </div>
           <div className="info-step">
             <span className="step-number">6</span>
             <div className="step-content">
-              <strong>Add to Patient History:</strong> After scanning, click "Add to Patient" to 
+              <strong>Add to Patient History:</strong> After scanning, click "Add to Patient" to
               save the scan to the patient's history for future tracking.
             </div>
           </div>
@@ -822,7 +822,7 @@ function InfoGuide() {
           <div className="info-step">
             <span className="step-number">8</span>
             <div className="step-content">
-              <strong>View Patient Data:</strong> Switch to the second panel (View 1) to see scan 
+              <strong>View Patient Data:</strong> Switch to the second panel (View 1) to see scan
               history, patient information, comparison tools, and tumor progression charts.
             </div>
           </div>
@@ -832,12 +832,12 @@ function InfoGuide() {
       <div className="info-section">
         <h3 className="info-section-title">Exemplar Dataset</h3>
         <p className="info-text">
-          The Exemplar Dataset contains a comprehensive collection of brain MRI images that can be 
-          used for testing, training, and reference purposes. This dataset includes both images 
+          The Exemplar Dataset contains a comprehensive collection of brain MRI images that can be
+          used for testing, training, and reference purposes. This dataset includes both images
           with detected tumors and clean scans without tumors.
         </p>
         <div className="exemplar-dataset-section">
-          <button 
+          <button
             className="exemplar-dataset-button"
             onClick={handleExemplarDataset}
           >
@@ -855,11 +855,6 @@ function InfoGuide() {
               <li>Images are organized by patient cases and scan dates for easy navigation</li>
               <li>Each image includes metadata such as tumor count, confidence scores, and scan dates</li>
             </ul>
-            <p className="info-text" style={{ marginTop: '16px', fontStyle: 'italic' }}>
-              Note: The exemplar dataset is a curated collection of anonymized MRI scans designed 
-              for educational and testing purposes. Always verify results with professional medical 
-              consultation for actual patient care.
-            </p>
           </div>
         </div>
       </div>

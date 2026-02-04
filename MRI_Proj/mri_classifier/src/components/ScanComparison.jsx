@@ -16,14 +16,14 @@ export default function ScanComparison({ isExpanded = false }) {
   const [fixedAnnotated, setFixedAnnotated] = useState(null);
   const [movingAnnotated, setMovingAnnotated] = useState(null);
   const [error, setError] = useState(null);
-  
+
   const fixedInputRef = useRef(null);
   const movingInputRef = useRef(null);
 
   const handleFixedFileChange = (e) => {
     const file = e.target.files[0];
     if (!file || !file.type.startsWith('image/')) return;
-    
+
     setFixedFile(file);
     setError(null);
     const reader = new FileReader();
@@ -34,7 +34,7 @@ export default function ScanComparison({ isExpanded = false }) {
   const handleMovingFileChange = (e) => {
     const file = e.target.files[0];
     if (!file || !file.type.startsWith('image/')) return;
-    
+
     setMovingFile(file);
     setError(null);
     const reader = new FileReader();
@@ -96,13 +96,13 @@ export default function ScanComparison({ isExpanded = false }) {
         const text = await response.text();
         throw new Error(`Unexpected response format: ${text.substring(0, 100)}`);
       }
-      
+
       setMetrics(result.metrics);
-      
+
       if (result.fixed_annotated) {
         setFixedAnnotated(`data:image/png;base64,${result.fixed_annotated}`);
       }
-      
+
       if (result.moving_annotated) {
         setMovingAnnotated(`data:image/png;base64,${result.moving_annotated}`);
       }
@@ -147,7 +147,7 @@ export default function ScanComparison({ isExpanded = false }) {
             <div className="preview-subtitle">Compare two MRI scans</div>
           </div>
         </div>
-        
+
         <div className="preview-content">
           {fixedPreview || movingPreview ? (
             <div className="preview-info-message">
@@ -262,7 +262,7 @@ export default function ScanComparison({ isExpanded = false }) {
       {metrics && (
         <div className="process-steps">
           <h3 className="process-title">Comparison Process</h3>
-          
+
           {/* Step 1: Original Scans */}
           <div className="process-step">
             <div className="step-header">
@@ -342,12 +342,12 @@ export default function ScanComparison({ isExpanded = false }) {
                   <div className="step-description-box" style={{ marginTop: '12px' }}>
                     <p><strong>Reference Scan:</strong> {metrics.fixed_scan.num_tumors} tumour(s)</p>
                     <p style={{ marginLeft: '20px' }}>
-                      Total area: {metrics.fixed_scan.total_area_pixels?.toFixed(0) || '0'} pixels² 
+                      Total area: {metrics.fixed_scan.total_area_pixels?.toFixed(0) || '0'} pixels²
                       ({metrics.fixed_scan.total_area_percent?.toFixed(2) || '0.00'}% of image)
                     </p>
                     <p><strong>New Scan:</strong> {metrics.moving_scan.num_tumors} tumour(s)</p>
                     <p style={{ marginLeft: '20px' }}>
-                      Total area: {metrics.moving_scan.total_area_pixels?.toFixed(0) || '0'} pixels² 
+                      Total area: {metrics.moving_scan.total_area_pixels?.toFixed(0) || '0'} pixels²
                       ({metrics.moving_scan.total_area_percent?.toFixed(2) || '0.00'}% of image)
                     </p>
                   </div>
@@ -368,9 +368,9 @@ export default function ScanComparison({ isExpanded = false }) {
                   <p>Direct comparison of tumour sizes and counts between scans.</p>
                   <p>No image alignment is performed - tumours are compared as detected.</p>
                   <p><strong>Area Change Calculation:</strong> The normalized area change is calculated as the difference in percentage of image area: <code>Change = New Scan % - Reference Scan %</code></p>
-                  <p>For example, if Reference = 5.2% and New = 7.8%, the change is +2.6 percentage points (growth).</p>
+                  <p>For example, if Reference = 5.2% and New = 7.8%.</p>
                 </div>
-                
+
                 {/* Comparison Metrics */}
                 <div className="metrics-section">
                   <h4>Area Comparison (Normalized by Image Size)</h4>
@@ -395,7 +395,7 @@ export default function ScanComparison({ isExpanded = false }) {
                         {metrics.fixed_scan?.total_area_percent?.toFixed(2) || '0.00'}%
                       </span>
                       <div className="metric-hint">
-                        {metrics.fixed_scan?.total_area_pixels?.toFixed(0) || '0'} pixels² 
+                        {metrics.fixed_scan?.total_area_pixels?.toFixed(0) || '0'} pixels²
                         ({metrics.fixed_scan?.image_size?.width || '?'} × {metrics.fixed_scan?.image_size?.height || '?'})
                       </div>
                     </div>
@@ -405,7 +405,7 @@ export default function ScanComparison({ isExpanded = false }) {
                         {metrics.moving_scan?.total_area_percent?.toFixed(2) || '0.00'}%
                       </span>
                       <div className="metric-hint">
-                        {metrics.moving_scan?.total_area_pixels?.toFixed(0) || '0'} pixels² 
+                        {metrics.moving_scan?.total_area_pixels?.toFixed(0) || '0'} pixels²
                         ({metrics.moving_scan?.image_size?.width || '?'} × {metrics.moving_scan?.image_size?.height || '?'})
                       </div>
                     </div>
@@ -442,8 +442,8 @@ export default function ScanComparison({ isExpanded = false }) {
                             <span className="tumor-id">Tumour {tumor.id}</span>
                             <span className="tumor-details">
                               Area: {tumor.area_percent?.toFixed(2) || tumor.area?.toFixed(0) || '0'}% of image
-                              {tumor.area && ` (${tumor.area.toFixed(0)} px²)`} | 
-                              Size: {tumor.width.toFixed(0)} × {tumor.height.toFixed(0)} px | 
+                              {tumor.area && ` (${tumor.area.toFixed(0)} px²)`} |
+                              Size: {tumor.width.toFixed(0)} × {tumor.height.toFixed(0)} px |
                               Confidence: {(tumor.confidence * 100).toFixed(1)}%
                             </span>
                           </div>
@@ -468,8 +468,8 @@ export default function ScanComparison({ isExpanded = false }) {
                               </span>
                               <span className="tumor-details">
                                 Area: {tumor.area_percent?.toFixed(2) || tumor.area?.toFixed(0) || '0'}% of image
-                                {tumor.area && ` (${tumor.area.toFixed(0)} px²)`} | 
-                                Size: {tumor.width.toFixed(0)} × {tumor.height.toFixed(0)} px | 
+                                {tumor.area && ` (${tumor.area.toFixed(0)} px²)`} |
+                                Size: {tumor.width.toFixed(0)} × {tumor.height.toFixed(0)} px |
                                 Confidence: {(tumor.confidence * 100).toFixed(1)}%
                               </span>
                             </div>

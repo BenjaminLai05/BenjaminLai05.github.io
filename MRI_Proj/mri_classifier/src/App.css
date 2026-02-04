@@ -107,7 +107,7 @@
   /* Subtle depth */
   box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.2);
-    
+
   transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
   border: 2px solid transparent;
 }
@@ -125,13 +125,16 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow:
       0 4px 16px rgba(0, 0, 0, 0.2),
       inset 0 1px 2px rgba(255, 255, 255, 0.1),
       0 0 20px rgba(100, 181, 246, 0.4),
       0 0 40px rgba(100, 181, 246, 0.2);
   }
+
   50% {
     box-shadow:
       0 4px 16px rgba(0, 0, 0, 0.2),
@@ -147,7 +150,8 @@
   height: 100%;
   object-fit: fill;
   display: block;
-  border-radius: 16px; /* Add this to match imageContainer */
+  border-radius: 16px;
+  /* Add this to match imageContainer */
 
   /* Smooth image transitions */
   animation: fadeIn 0.4s ease-in-out;
@@ -237,7 +241,7 @@
 
 
 
-.btn:hover {
+.btn:hover:not(.btn--disabled):not(:disabled) {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
   box-shadow:
@@ -246,18 +250,48 @@
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-.btn:active {
+.btn:active:not(.btn--disabled):not(:disabled) {
   transform: translateY(0);
   box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.15),
     0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.btn:disabled {
+.btn:disabled,
+.btn--disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Shake animation for disabled button click */
+@keyframes btnShake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-3px);
+  }
+
+  40% {
+    transform: translateX(3px);
+  }
+
+  60% {
+    transform: translateX(-3px);
+  }
+
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+.btn--shake {
+  animation: btnShake 0.4s ease-in-out;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -359,18 +393,14 @@
   height: auto;
   position: relative;
   top: 30px;
-  filter: 
-    invert(1) 
-    brightness(1.2)
-    drop-shadow(0 2px 8px rgba(255, 255, 255, 0.2));
+  filter:
+    invert(1) brightness(1.2) drop-shadow(0 2px 8px rgba(255, 255, 255, 0.2));
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .rotator-container:hover .rotator-img {
-  filter: 
-    invert(1) 
-    brightness(1.4)
-    drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3));
+  filter:
+    invert(1) brightness(1.4) drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3));
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -544,17 +574,21 @@
 
 .carousel-view--patient-history {
   flex-direction: column;
-  padding: 30px 80px 40px 80px; /* Fixed padding for edge zones */
-  align-items: flex-start; /* Anchor content on the left side */
+  padding: 30px 80px 40px 80px;
+  /* Fixed padding for edge zones */
+  align-items: flex-start;
+  /* Anchor content on the left side */
   justify-content: flex-start;
   position: relative;
-  overflow: hidden; /* Prevent content overflow */
+  overflow: hidden;
+  /* Prevent content overflow */
 }
 
 /* Content wrapper - flows naturally, no absolute positioning */
 .patient-history-content {
   width: 100%;
-  max-width: 100%; /* Don't exceed parent */
+  max-width: 100%;
+  /* Don't exceed parent */
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -567,8 +601,10 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  width: 88%; /* Match middle/bottom row width for vertical alignment */
-  flex-shrink: 0; /* Don't shrink */
+  width: 88%;
+  /* Match middle/bottom row width for vertical alignment */
+  flex-shrink: 0;
+  /* Don't shrink */
   min-height: auto;
 }
 
@@ -587,35 +623,49 @@
 /* MIDDLE ROW: Two side-by-side containers */
 .middle-row {
   display: flex;
-  gap: 20px; /* Fixed gap for consistent spacing */
-  width: 88%; /* Scaled down by 15% for more right margin */
-  height: 30vh; /* Viewport-relative height for consistent scaling */
-  flex-shrink: 0; /* Don't shrink */
-  min-width: 0; /* Allow shrinking below content size */
+  gap: 20px;
+  /* Fixed gap for consistent spacing */
+  width: 88%;
+  /* Scaled down by 15% for more right margin */
+  height: 30vh;
+  /* Viewport-relative height for consistent scaling */
+  flex-shrink: 0;
+  /* Don't shrink */
+  min-width: 0;
+  /* Allow shrinking below content size */
 }
 
 .middle-row .expandable-container {
   flex: 1;
   height: 100%;
-  min-width: 0; /* Allow shrinking below content size */
-  overflow: hidden; /* Prevent content overflow */
+  min-width: 0;
+  /* Allow shrinking below content size */
+  overflow: hidden;
+  /* Prevent content overflow */
 }
 
 /* BOTTOM ROW: Chart container fills remaining space */
 .bottom-row {
   display: flex;
-  width: 88%; /* Scaled down by 15% for more right margin */
-  flex: 1; /* Take remaining space */
-  min-height: 12vh; /* Reduced by 10% (from 20vh) */
-  margin-bottom: 50px; /* Add bottom margin (30px more than before) */
-  min-width: 0; /* Allow shrinking below content size */
+  width: 88%;
+  /* Scaled down by 15% for more right margin */
+  flex: 1;
+  /* Take remaining space */
+  min-height: 12vh;
+  /* Reduced by 10% (from 20vh) */
+  margin-bottom: 50px;
+  /* Add bottom margin (30px more than before) */
+  min-width: 0;
+  /* Allow shrinking below content size */
 }
 
 .bottom-row .expandable-container {
   width: 100%;
   height: 100%;
-  min-width: 0; /* Allow shrinking below content size */
-  overflow: hidden; /* Prevent content overflow */
+  min-width: 0;
+  /* Allow shrinking below content size */
+  overflow: hidden;
+  /* Prevent content overflow */
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -626,7 +676,8 @@
   position: relative;
   width: 100%;
   height: 100%;
-  min-width: 0; /* Allow shrinking in flex layouts */
+  min-width: 0;
+  /* Allow shrinking in flex layouts */
 
   /* Match scan history panel background */
   background: rgba(20, 20, 20, 0.95);
@@ -651,7 +702,8 @@
 }
 
 .expandable-container:hover {
-  background: rgba(20, 20, 20, 0.98); /* Slightly brighter on hover */
+  background: rgba(20, 20, 20, 0.98);
+  /* Slightly brighter on hover */
   border-color: rgba(255, 255, 255, 0.3);
   box-shadow:
     0 12px 40px 0 rgba(0, 0, 0, 0.35),
@@ -674,7 +726,7 @@
 }
 
 /* Allow content to fill container when needed */
-.container-content > * {
+.container-content>* {
   width: 100%;
   height: 100%;
   flex: 1;
@@ -878,6 +930,7 @@
     opacity: 0;
     transform: translateY(20px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -1192,9 +1245,12 @@
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -1304,8 +1360,74 @@
     opacity: 0;
     transform: translateX(-50%) translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+}
+
+/* ═══════════════════════════════════════════════════════
+   SCAN COMPARISON NEW LAYOUT
+   ═══════════════════════════════════════════════════════ */
+
+.scan-comparison-new {
+  display: flex;
+  gap: 40px;
+  padding: 20px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.scan-comparison-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.scan-comparison-button {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 12px 24px;
+  min-width: 150px;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.scan-comparison-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.scan-comparison-image-container {
+  width: 150px;
+  height: 150px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scan-comparison-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

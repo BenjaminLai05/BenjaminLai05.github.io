@@ -12,6 +12,7 @@ import PatientSelector from './components/PatientSelector';
 import ScanHistory from './components/ScanHistory';
 import { getPatientChartData } from './data/patientScanHistory';
 import ScanComparison from './components/ScanComparison';
+import ScanComparisonExpanded from './components/ScanComparisonExpanded';
 import PatientInfo from './components/PatientInfo';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import API_BASE_URL from './config';
@@ -359,7 +360,7 @@ export default function App() {
         >
           <div className="modal-content-wrapper">
             {expandedContainer === 'scan-comparison' && (
-              <ScanComparison isExpanded={true} />
+              <ScanComparisonExpanded />
             )}
             {expandedContainer === 'patient-info' && (
               <PatientInfo selectedPatient={selectedPatient} isExpanded={true} />
@@ -381,6 +382,20 @@ export default function App() {
    Small helpers / sub-components
 ---------------------------------------------------------*/
 function SidePanel({ side, buttons }) {
+  const [shakingButtons, setShakingButtons] = React.useState({});
+
+  const handleClick = (btn) => {
+    if (btn.disabled) {
+      // Trigger shake for this button
+      setShakingButtons(prev => ({ ...prev, [btn.label]: true }));
+      setTimeout(() => {
+        setShakingButtons(prev => ({ ...prev, [btn.label]: false }));
+      }, 400);
+    } else if (btn.onClick) {
+      btn.onClick();
+    }
+  };
+
   return (
     <div className={`side side--${side}`}>
       {buttons.map((btn) =>
@@ -389,9 +404,8 @@ function SidePanel({ side, buttons }) {
         ) : (
           <button
             key={btn.label}
-            className="btn"
-            onClick={btn.onClick}
-            disabled={btn.disabled}
+            className={`btn ${btn.disabled ? 'btn--disabled' : ''} ${shakingButtons[btn.label] ? 'btn--shake' : ''}`}
+            onClick={() => handleClick(btn)}
             title={btn.disabled && btn.label === 'Upload' ? 'Please select a patient first' : btn.disabled && btn.label === 'Scan' ? 'Please select a patient and upload an image' : btn.disabled && btn.label === 'Add to Patient' ? 'Please select a patient and scan an image first' : undefined}
           >
             {btn.label}

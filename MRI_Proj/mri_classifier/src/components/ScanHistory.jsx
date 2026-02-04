@@ -5,13 +5,14 @@ import { getPatientScanHistory } from '../data/patientScanHistory';
 export default function ScanHistory({ selectedPatient = null, additionalScans = [] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
+  const [isShaking, setIsShaking] = useState(false);
   const dropdownRef = useRef(null);
 
   // Get patient-specific scan history
   const patientHistory = selectedPatient ? getPatientScanHistory(selectedPatient) : { scans: [] };
   // Merge static scans with additional (dynamically added) scans
   const allScans = [...(patientHistory.scans || []), ...additionalScans];
-  
+
   // Convert to format expected by component
   const formattedScans = allScans.map((scan, index) => ({
     id: index + 1,
@@ -52,13 +53,24 @@ export default function ScanHistory({ selectedPatient = null, additionalScans = 
     setExpandedId(expandedId === id ? null : id);
   };
 
+  // Handle button click - shake if disabled, open if enabled
+  const handleButtonClick = () => {
+    if (!selectedPatient) {
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 400);
+      return;
+    }
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className="scan-history" ref={dropdownRef}>
       <button
-        className="scan-history__button"
-        onClick={() => setIsOpen(!isOpen)}
+        className={`scan-history__button ${!selectedPatient ? 'scan-history__button--disabled' : ''} ${isShaking ? 'scan-history__button--shake' : ''}`}
+        onClick={handleButtonClick}
         aria-expanded={isOpen}
         aria-haspopup="true"
+        title={!selectedPatient ? 'Select a patient first' : ''}
       >
         <svg
           className="scan-history__icon"
@@ -85,110 +97,123 @@ export default function ScanHistory({ selectedPatient = null, additionalScans = 
           </div>
 
           {formattedScans.length === 0 ? (
+            // Patient selected but no scans
             <div className="scan-history__empty">
-              <p>No scan history available{selectedPatient ? ` for ${selectedPatient}` : ''}.</p>
+              <svg
+                className="scan-history__empty-icon"
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="2" />
+                <path d="M3 10h18" stroke="currentColor" strokeWidth="2" />
+                <circle cx="12" cy="15" r="2" stroke="currentColor" strokeWidth="2" />
+              </svg>
+              <p className="scan-history__empty-title">No Scan History</p>
+              <p className="scan-history__empty-hint">{selectedPatient} has no previous scans</p>
             </div>
           ) : (
             <div className="scan-history__list">
               {formattedScans.map((scan) => (
-              <div key={scan.id} className="scan-history__item">
-                <button
-                  className="scan-history__item-header"
-                  onClick={() => toggleExpand(scan.id)}
-                >
-                  <img
-                    src={scan.thumbnail}
-                    alt={scan.fileName}
-                    className="scan-history__thumbnail"
-                  />
-
-                  <div className="scan-history__item-info">
-                    <div className="scan-history__item-row">
-                      <span className="scan-history__filename">{scan.fileName}</span>
-                      <span
-                        className={`scan-history__badge scan-history__badge--${scan.status}`}
-                      >
-                        {scan.status === 'clean' ? 'Clean' : 'Tumour Detected'}
-                      </span>
-                    </div>
-                    <span className="scan-history__timestamp">{scan.timestamp}</span>
-                  </div>
-
-                  <svg
-                    className={`scan-history__expand-icon ${
-                      expandedId === scan.id ? 'scan-history__expand-icon--open' : ''
-                    }`}
-                    width="12"
-                    height="8"
-                    viewBox="0 0 12 8"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                <div key={scan.id} className="scan-history__item">
+                  <button
+                    className="scan-history__item-header"
+                    onClick={() => toggleExpand(scan.id)}
                   >
-                    <path
-                      d="M1 1.5L6 6.5L11 1.5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                    <img
+                      src={scan.thumbnail}
+                      alt={scan.fileName}
+                      className="scan-history__thumbnail"
                     />
-                  </svg>
-                </button>
 
-                {expandedId === scan.id && (
-                  <div className="scan-history__item-details">
-                    <div className="scan-history__detail-row">
-                      <span className="scan-history__detail-label">Confidence:</span>
-                      <span className="scan-history__detail-value">
-                        {(scan.confidence * 100).toFixed(1)}%
-                      </span>
+                    <div className="scan-history__item-info">
+                      <div className="scan-history__item-row">
+                        <span className="scan-history__filename">{scan.fileName}</span>
+                        <span
+                          className={`scan-history__badge scan-history__badge--${scan.status}`}
+                        >
+                          {scan.status === 'clean' ? 'Clean' : 'Tumour Detected'}
+                        </span>
+                      </div>
+                      <span className="scan-history__timestamp">{scan.timestamp}</span>
                     </div>
-                    <div className="scan-history__detail-row">
-                      <span className="scan-history__detail-label">Resolution:</span>
-                      <span className="scan-history__detail-value">
-                        {scan.details.resolution}
-                      </span>
-                    </div>
-                    <div className="scan-history__detail-row">
-                      <span className="scan-history__detail-label">File Size:</span>
-                      <span className="scan-history__detail-value">
-                        {scan.details.fileSize}
-                      </span>
-                    </div>
-                    <div className="scan-history__detail-row">
-                      <span className="scan-history__detail-label">Scan Duration:</span>
-                      <span className="scan-history__detail-value">
-                        {scan.details.scanDuration}
-                      </span>
-                    </div>
-                    {scan.tumorCount !== undefined && (
-                      <>
-                        <div className="scan-history__detail-row">
-                          <span className="scan-history__detail-label">Year:</span>
-                          <span className="scan-history__detail-value">
-                            {scan.year}
-                          </span>
-                        </div>
-                        <div className="scan-history__detail-row">
-                          <span className="scan-history__detail-label">Tumour Count:</span>
-                          <span className="scan-history__detail-value">
-                            {scan.tumorCount}
-                          </span>
-                        </div>
-                        {scan.tumorAreaPercent > 0 && (
+
+                    <svg
+                      className={`scan-history__expand-icon ${expandedId === scan.id ? 'scan-history__expand-icon--open' : ''
+                        }`}
+                      width="12"
+                      height="8"
+                      viewBox="0 0 12 8"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1 1.5L6 6.5L11 1.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+
+                  {expandedId === scan.id && (
+                    <div className="scan-history__item-details">
+                      <div className="scan-history__detail-row">
+                        <span className="scan-history__detail-label">Confidence:</span>
+                        <span className="scan-history__detail-value">
+                          {(scan.confidence * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="scan-history__detail-row">
+                        <span className="scan-history__detail-label">Resolution:</span>
+                        <span className="scan-history__detail-value">
+                          {scan.details.resolution}
+                        </span>
+                      </div>
+                      <div className="scan-history__detail-row">
+                        <span className="scan-history__detail-label">File Size:</span>
+                        <span className="scan-history__detail-value">
+                          {scan.details.fileSize}
+                        </span>
+                      </div>
+                      <div className="scan-history__detail-row">
+                        <span className="scan-history__detail-label">Scan Duration:</span>
+                        <span className="scan-history__detail-value">
+                          {scan.details.scanDuration}
+                        </span>
+                      </div>
+                      {scan.tumorCount !== undefined && (
+                        <>
                           <div className="scan-history__detail-row">
-                            <span className="scan-history__detail-label">Tumour Area:</span>
+                            <span className="scan-history__detail-label">Year:</span>
                             <span className="scan-history__detail-value">
-                              {scan.tumorAreaPercent.toFixed(2)}% of image
+                              {scan.year}
                             </span>
                           </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                          <div className="scan-history__detail-row">
+                            <span className="scan-history__detail-label">Tumour Count:</span>
+                            <span className="scan-history__detail-value">
+                              {scan.tumorCount}
+                            </span>
+                          </div>
+                          {scan.tumorAreaPercent > 0 && (
+                            <div className="scan-history__detail-row">
+                              <span className="scan-history__detail-label">Tumour Area:</span>
+                              <span className="scan-history__detail-value">
+                                {scan.tumorAreaPercent.toFixed(2)}% of image
+                              </span>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           )}
         </div>
       )}

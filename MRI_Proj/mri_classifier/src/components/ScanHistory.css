@@ -28,10 +28,45 @@
   max-width: fit-content;
 }
 
-.scan-history__button:hover {
+.scan-history__button:hover:not(.scan-history__button--disabled) {
   background: rgba(255, 255, 255, 0.12);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.scan-history__button:disabled,
+.scan-history__button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Shake animation for disabled button click */
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-3px);
+  }
+
+  40% {
+    transform: translateX(3px);
+  }
+
+  60% {
+    transform: translateX(-3px);
+  }
+
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+.scan-history__button--shake {
+  animation: shake 0.4s ease-in-out;
 }
 
 .scan-history__icon {
@@ -71,6 +106,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -263,6 +299,7 @@
     padding-top: 0;
     padding-bottom: 0;
   }
+
   to {
     opacity: 1;
     max-height: 200px;
@@ -295,8 +332,46 @@
 }
 
 .scan-history__empty {
-  padding: 24px;
+  background: rgba(20, 20, 20, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
   text-align: center;
-  color: rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.scan-history__empty-icon {
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 4px;
+}
+
+.scan-history__empty-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.scan-history__empty-hint {
+  margin: 0;
   font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Special styling for "no patient selected" state */
+.scan-history__empty--no-patient .scan-history__empty-icon {
+  color: rgba(100, 181, 246, 0.6);
+}
+
+.scan-history__empty--no-patient .scan-history__empty-title {
+  color: rgba(100, 181, 246, 0.9);
 }

@@ -220,132 +220,174 @@ async def register_scans(
 async def compare_scans(
     fixed_img: UploadFile = File(...),
     moving_img: UploadFile = File(...),
-    fixed_mask: Optional[UploadFile] = File(None),
-    moving_mask: Optional[UploadFile] = File(None),
-    registration_type: str = Form("rigid"),
-    intensity_threshold: float = Form(10.0),
-    return_visualization: bool = Form(True)
+    confidence: float = Form(0.5),
+    return_annotated: str = Form("false")  # Accept as string to handle 'true'/'false'
 ):
     """
-    Compare two scans: register them, compute change metrics, and return results.
+    Compare two scans using YOLO tumor detection.
     
     This endpoint:
-    1. Registers (aligns) the moving image to the fixed image
-    2. Computes change metrics (intensity, area, pixel differences)
-    3. Optionally returns a visualization of changes
+    1. Detects tumors in both fixed and moving images using YOLO
+    2. Calculates tumor metrics (count, area, size)
+    3. Compares tumors between scans
+    4. Optionally returns annotated images with bounding boxes
     """
-    log.info("▶️  /compare-scans called, type=%s, threshold=%.2f", registration_type, intensity_threshold)
-    
-    # Read images
-    fixed_raw = await fixed_img.read()
-    moving_raw = await moving_img.read()
-    
-    fixed_pil = Image.open(BytesIO(fixed_raw)).convert("RGB")
-    moving_pil = Image.open(BytesIO(moving_raw)).convert("RGB")
-    
-    fixed_array = np.array(fixed_pil)
-    moving_array = np.array(moving_pil)
-    
-    log.info("   Fixed image shape: %s", fixed_array.shape)
-    log.info("   Moving image shape: %s", moving_array.shape)
-    
-    # Read masks if provided
-    fixed_mask_array = None
-    moving_mask_array = None
-    registered_mask_array = None
-    
-    if fixed_mask:
-        fixed_mask_raw = await fixed_mask.read()
-        fixed_mask_pil = Image.open(BytesIO(fixed_mask_raw)).convert("L")
-        fixed_mask_array = np.array(fixed_mask_pil)
-        log.info("   Fixed mask provided, shape: %s", fixed_mask_array.shape)
-    
-    if moving_mask:
-        moving_mask_raw = await moving_mask.read()
-        moving_mask_pil = Image.open(BytesIO(moving_mask_raw)).convert("L")
-        moving_mask_array = np.array(moving_mask_pil)
-        log.info("   Moving mask provided, shape: %s", moving_mask_array.shape)
-    
-    # Preprocess and register
-    fixed_processed = preprocess_for_registration(fixed_array)
-    
-    # Resize moving to match fixed
-    from PIL import Image as PILImage
-    moving_resized = moving_pil.resize(fixed_pil.size, PILImage.Resampling.LANCZOS)
-    moving_processed = preprocess_for_registration(np.array(moving_resized))
-    
-    # Resize moving mask if provided
-    if moving_mask_array is not None:
-        moving_mask_resized = Image.fromarray(moving_mask_array, mode='L')
-        moving_mask_resized = moving_mask_resized.resize(fixed_pil.size, PILImage.Resampling.LANCZOS)
-        moving_mask_array = np.array(moving_mask_resized)
-    
-    # Register images
     try:
-        registered_image, transform = register_images(
-            fixed_processed,
-            moving_processed,
-            registration_type
-        )
-        log.info("   Registration successful")
+        # Convert return_annotated string to boolean
+        return_annotated_bool = return_annotated.lower() in ['true', '1', 'yes']
         
-        # Register masks if provided
-        if moving_mask_array is not None:
-            registered_image_full, registered_mask_array = register_and_apply_to_mask(
-                fixed_processed,
-                moving_processed,
-                moving_mask_array,
-                registration_type
-            )
-            log.info("   Mask registration successful")
+        log.info("▶️  /compare-scans called, confidence=%.2f, return_annotated=%s", confidence, return_annotated_bool)
+        
+        # Read images
+        fixed_raw = await fixed_img.read()
+        moving_raw = await moving_img.read()
+        
+        fixed_pil = Image.open(BytesIO(fixed_raw)).convert("RGB")
+        moving_pil = Image.open(BytesIO(moving_raw)).convert("RGB")
+        
+        log.info("   Fixed image size: %s", fixed_pil.size)
+        log.info("   Moving image size: %s", moving_pil.size)
+        
+        # Run YOLO detection on both images
+        log.info("   Running YOLO detection on fixed image...")
+        fixed_results = model.predict(fixed_pil, conf=confidence)[0]
+        fixed_boxes, fixed_confidences = extract_boxes_and_confidences(fixed_results)
+        log.info("   Fixed image: %d tumors detected", len(fixed_boxes))
+        
+        log.info("   Running YOLO detection on moving image...")
+        moving_results = model.predict(moving_pil, conf=confidence)[0]
+        moving_boxes, moving_confidences = extract_boxes_and_confidences(moving_results)
+        log.info("   Moving image: %d tumors detected", len(moving_boxes))
+        
+        # Calculate tumor metrics for fixed scan
+        fixed_image_area = fixed_pil.size[0] * fixed_pil.size[1]
+        fixed_tumors = []
+        fixed_total_area = 0
+        
+        for idx, (box, conf) in enumerate(zip(fixed_boxes, fixed_confidences)):
+            x1, y1, x2, y2 = box
+            width = x2 - x1
+            height = y2 - y1
+            area = width * height
+            fixed_total_area += area
+            
+            fixed_tumors.append({
+                "id": idx + 1,
+                "x1": float(x1),
+                "y1": float(y1),
+                "x2": float(x2),
+                "y2": float(y2),
+                "width": float(width),
+                "height": float(height),
+                "area": float(area),
+                "area_percent": float((area / fixed_image_area) * 100),
+                "confidence": float(conf)
+            })
+        
+        # Calculate tumor metrics for moving scan
+        moving_image_area = moving_pil.size[0] * moving_pil.size[1]
+        moving_tumors = []
+        moving_total_area = 0
+        
+        for idx, (box, conf) in enumerate(zip(moving_boxes, moving_confidences)):
+            x1, y1, x2, y2 = box
+            width = x2 - x1
+            height = y2 - y1
+            area = width * height
+            moving_total_area += area
+            
+            moving_tumors.append({
+                "id": idx + 1,
+                "x1": float(x1),
+                "y1": float(y1),
+                "x2": float(x2),
+                "y2": float(y2),
+                "width": float(width),
+                "height": float(height),
+                "area": float(area),
+                "area_percent": float((area / moving_image_area) * 100),
+                "confidence": float(conf)
+            })
+        
+        # Calculate comparison metrics
+        tumor_count_change = len(moving_tumors) - len(fixed_tumors)
+        new_tumors_detected = max(0, tumor_count_change)
+        
+        # Calculate area changes (normalized by image size)
+        fixed_area_percent = (fixed_total_area / fixed_image_area) * 100 if fixed_image_area > 0 else 0
+        moving_area_percent = (moving_total_area / moving_image_area) * 100 if moving_image_area > 0 else 0
+        area_percent_change = moving_area_percent - fixed_area_percent
+        
+        # Identify new tumors (simple heuristic: tumors in moving that exceed fixed count)
+        new_tumors = []
+        if tumor_count_change > 0:
+            new_tumors = moving_tumors[-tumor_count_change:]
+        
+        # Build response metrics
+        metrics = {
+            "fixed_scan": {
+                "num_tumors": len(fixed_tumors),
+                "tumors": fixed_tumors,
+                "total_area_pixels": float(fixed_total_area),
+                "total_area_percent": float(fixed_area_percent),
+                "image_size": {
+                    "width": int(fixed_pil.size[0]),
+                    "height": int(fixed_pil.size[1])
+                }
+            },
+            "moving_scan": {
+                "num_tumors": len(moving_tumors),
+                "tumors": moving_tumors,
+                "total_area_pixels": float(moving_total_area),
+                "total_area_percent": float(moving_area_percent),
+                "image_size": {
+                    "width": int(moving_pil.size[0]),
+                    "height": int(moving_pil.size[1])
+                }
+            },
+            "comparison": {
+                "tumor_count_change": int(tumor_count_change),
+                "new_tumors_detected": int(new_tumors_detected),
+                "new_tumors": new_tumors,
+                "area_percent_change": float(area_percent_change),
+                "area_growth": bool(area_percent_change > 0),
+                "area_shrinkage": bool(area_percent_change < 0)
+            }
+        }
+        
+        # Build result
+        result = {
+            "metrics": metrics,
+            "confidence_threshold": confidence
+        }
+        
+        # Add annotated images if requested
+        if return_annotated_bool:
+            log.info("   Generating annotated images...")
+            
+            # Generate annotated fixed image
+            fixed_annotated = fixed_results.plot()
+            fixed_annotated_pil = Image.fromarray(fixed_annotated)
+            fixed_buf = BytesIO()
+            fixed_annotated_pil.save(fixed_buf, format="PNG")
+            fixed_buf.seek(0)
+            result["fixed_annotated"] = base64.b64encode(fixed_buf.read()).decode('utf-8')
+            
+            # Generate annotated moving image
+            moving_annotated = moving_results.plot()
+            moving_annotated_pil = Image.fromarray(moving_annotated)
+            moving_buf = BytesIO()
+            moving_annotated_pil.save(moving_buf, format="PNG")
+            moving_buf.seek(0)
+            result["moving_annotated"] = base64.b64encode(moving_buf.read()).decode('utf-8')
+        
+        log.info("⬅️  returning comparison results with tumor detection")
+        
+        return JSONResponse(result)
         
     except Exception as e:
-        log.error("   Registration failed: %s", str(e))
+        log.error("❌ Error in /compare-scans: %s", str(e))
+        import traceback
+        log.error(traceback.format_exc())
         from fastapi import HTTPException
-        raise HTTPException(status_code=500, detail=f"Registration failed: {str(e)}")
-    
-    # Compute change metrics
-    log.info("   Computing change metrics...")
-    metrics = compute_change_metrics(
-        fixed_processed,
-        registered_image,
-        fixed_mask_array,
-        registered_mask_array,
-        intensity_threshold
-    )
-    
-    # Add area change if both masks provided
-    if fixed_mask_array is not None and registered_mask_array is not None:
-        area_metrics = compute_area_change(fixed_mask_array, registered_mask_array)
-        metrics["area_change"] = area_metrics
-    
-    # Create visualization if requested
-    result = {
-        "metrics": metrics,
-        "registration_type": registration_type
-    }
-    
-    if return_visualization:
-        log.info("   Creating change visualization...")
-        visualization = create_change_visualization(
-            fixed_processed,
-            registered_image
-        )
-        vis_pil = Image.fromarray(visualization)
-        vis_buf = BytesIO()
-        vis_pil.save(vis_buf, format="PNG")
-        vis_buf.seek(0)
-        
-        result["visualization"] = base64.b64encode(vis_buf.read()).decode('utf-8')
-    
-    # Also include registered image
-    registered_pil = Image.fromarray(registered_image.astype(np.uint8), mode='L')
-    reg_buf = BytesIO()
-    registered_pil.save(reg_buf, format="PNG")
-    reg_buf.seek(0)
-    
-    result["registered_image"] = base64.b64encode(reg_buf.read()).decode('utf-8')
-    
-    log.info("⬅️  returning comparison results")
-    
-    return JSONResponse(result)
+        raise HTTPException(status_code=500, detail=f"Comparison failed: {str(e)}")

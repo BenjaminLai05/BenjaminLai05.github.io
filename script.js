@@ -10,6 +10,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     initScrollAnimations();
     initTabNavigation();
+    initDynamicDownloads();
 });
 
 // ================================
@@ -321,7 +322,27 @@ function debounce(func, wait) {
 }
 
 // ================================
-// 5. ERROR HANDLING
+// 6. DYNAMIC DOWNLOADS
+// ================================
+
+/**
+ * Initialize dynamic download links based on OS
+ */
+function initDynamicDownloads() {
+    const downloadBtn = document.getElementById('nba-project-download');
+    if (!downloadBtn) return;
+
+    const userAgent = navigator.userAgent.toLowerCase();
+    
+    // Check if user is on Mac
+    if (userAgent.includes('mac')) {
+        downloadBtn.href = "https://github.com/BenjaminLai05/nba_prediction_algo/releases/download/v1.0/NBA_Elo_CLI_Mac.zip";
+        // Note: Text remains unchanged as requested
+    }
+}
+
+// ================================
+// 7. ERROR HANDLING
 // ================================
 
 // Global error handler

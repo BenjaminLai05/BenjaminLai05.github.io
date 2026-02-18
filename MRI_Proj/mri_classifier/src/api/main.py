@@ -1,7 +1,8 @@
 # src/api/main.py
 from fastapi import FastAPI, File, UploadFile, Form
-from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi.responses import StreamingResponse, JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from io import BytesIO
 from PIL import Image
 from ultralytics import YOLO          # pip install ultralytics
@@ -40,21 +41,21 @@ model = YOLO(str(MODEL_PATH))                   # load once
 
 log = logging.getLogger("uvicorn")  # reuse Uvicorn logger
 
+# Serve React frontend static files (built by Docker)
+BUILD_DIR = Path(__file__).resolve().parents[2] / "build"
+if BUILD_DIR.exists():
+    app.mount("/static", StaticFiles(directory=BUILD_DIR / "static"), name="static")
+
 @app.get("/")
 async def root():
-    """Root endpoint - API information"""
+    """Serve React frontend"""
+    index = BUILD_DIR / "index.html"
+    if BUILD_DIR.exists() and index.exists():
+        return FileResponse(str(index))
     return {
         "message": "MRI Tumor Scanner API",
         "version": "1.0.0",
-        "endpoints": {
-            "/scan": "POST - Scan MRI image for tumors",
-            "/scan-with-mask": "POST - Scan MRI image and return mask",
-            "/register-scans": "POST - Register (align) two MRI scans",
-            "/compare-scans": "POST - Compare two MRI scans for changes",
-            "/docs": "GET - Interactive API documentation (Swagger UI)",
-            "/redoc": "GET - Alternative API documentation (ReDoc)",
-            "/health": "GET - Health check endpoint"
-        }
+        "docs": "/docs"
     }
 
 @app.get("/health")
@@ -391,3 +392,13 @@ async def compare_scans(
         log.error(traceback.format_exc())
         from fastapi import HTTPException
         raise HTTPException(status_code=500, detail=f"Comparison failed: {str(e)}")
+
+
+# ── Catch-all: serve React index.html for client-side routing ────────────────
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    """Serve React frontend for all non-API routes"""
+    index = BUILD_DIR / "index.html"
+    if BUILD_DIR.exists() and index.exists():
+        return FileResponse(str(index))
+    return JSONResponse({"detail": "Frontend not built"}, status_code=404)

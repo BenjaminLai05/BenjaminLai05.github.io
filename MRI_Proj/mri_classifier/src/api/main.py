@@ -45,6 +45,9 @@ log = logging.getLogger("uvicorn")  # reuse Uvicorn logger
 BUILD_DIR = Path(__file__).resolve().parents[2] / "build"
 if BUILD_DIR.exists():
     app.mount("/static", StaticFiles(directory=BUILD_DIR / "static"), name="static")
+    # Serve dataset images used in scan history
+    if (BUILD_DIR / "dataset").exists():
+        app.mount("/dataset", StaticFiles(directory=BUILD_DIR / "dataset"), name="dataset")
 
 @app.get("/")
 async def root():

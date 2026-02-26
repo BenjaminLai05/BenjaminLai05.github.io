@@ -397,11 +397,17 @@ async def compare_scans(
         raise HTTPException(status_code=500, detail=f"Comparison failed: {str(e)}")
 
 
-# ── Catch-all: serve React index.html for client-side routing ────────────────
+# ── Catch-all: serve static files or React index.html for client-side routing ─
 @app.get("/{full_path:path}")
 async def serve_frontend(full_path: str):
-    """Serve React frontend for all non-API routes"""
-    index = BUILD_DIR / "index.html"
-    if BUILD_DIR.exists() and index.exists():
-        return FileResponse(str(index))
+    """Serve static files from build directory, or fall back to React index.html"""
+    if BUILD_DIR.exists():
+        # First, check if the requested path is an actual file in the build dir
+        file_path = BUILD_DIR / full_path
+        if file_path.is_file():
+            return FileResponse(str(file_path))
+        # Otherwise, serve index.html for React client-side routing
+        index = BUILD_DIR / "index.html"
+        if index.exists():
+            return FileResponse(str(index))
     return JSONResponse({"detail": "Frontend not built"}, status_code=404)

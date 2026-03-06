@@ -333,10 +333,10 @@ function initDynamicDownloads() {
     if (!downloadBtn) return;
 
     const userAgent = navigator.userAgent.toLowerCase();
-    
+
     // Check if user is on Mac
     if (userAgent.includes('mac')) {
-        downloadBtn.href = "https://github.com/BenjaminLai05/nba_prediction_algo/releases/download/v1.0/NBA_Elo_CLI_Mac.zip";
+        downloadBtn.href = "https://github.com/BenjaminLai05/nba_prediction_algo/releases/download/1/NBA_Elo_CLI_Mac.zip";
         // Note: Text remains unchanged as requested
     }
 }

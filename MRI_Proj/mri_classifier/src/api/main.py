@@ -43,18 +43,27 @@ log = logging.getLogger("uvicorn")  # reuse Uvicorn logger
 
 # Serve React frontend static files (built by Docker)
 BUILD_DIR = Path(__file__).resolve().parents[2] / "build"
-if BUILD_DIR.exists():
-    app.mount("/static", StaticFiles(directory=BUILD_DIR / "static"), name="static")
-    # Serve dataset images used in scan history
-    if (BUILD_DIR / "dataset").exists():
-        app.mount("/dataset", StaticFiles(directory=BUILD_DIR / "dataset"), name="dataset")
+has_build_dir = False
+try:
+    if BUILD_DIR.exists():
+        has_build_dir = True
+        app.mount("/static", StaticFiles(directory=BUILD_DIR / "static"), name="static")
+        # Serve dataset images used in scan history
+        if (BUILD_DIR / "dataset").exists():
+            app.mount("/dataset", StaticFiles(directory=BUILD_DIR / "dataset"), name="dataset")
+except PermissionError:
+    log.warning(f"Could not access {BUILD_DIR} due to permissions. Serving API only.")
 
 @app.get("/")
 async def root():
     """Serve React frontend"""
-    index = BUILD_DIR / "index.html"
-    if BUILD_DIR.exists() and index.exists():
-        return FileResponse(str(index))
+    try:
+        index = BUILD_DIR / "index.html"
+        if has_build_dir and index.exists():
+            return FileResponse(str(index))
+    except PermissionError:
+        pass
+        
     return {
         "message": "MRI Tumor Scanner API",
         "version": "1.0.0",
@@ -401,13 +410,17 @@ async def compare_scans(
 @app.get("/{full_path:path}")
 async def serve_frontend(full_path: str):
     """Serve static files from build directory, or fall back to React index.html"""
-    if BUILD_DIR.exists():
-        # First, check if the requested path is an actual file in the build dir
-        file_path = BUILD_DIR / full_path
-        if file_path.is_file():
-            return FileResponse(str(file_path))
-        # Otherwise, serve index.html for React client-side routing
-        index = BUILD_DIR / "index.html"
-        if index.exists():
-            return FileResponse(str(index))
-    return JSONResponse({"detail": "Frontend not built"}, status_code=404)
+    try:
+        if has_build_dir:
+            # First, check if the requested path is an actual file in the build dir
+            file_path = BUILD_DIR / full_path
+            if file_path.is_file():
+                return FileResponse(str(file_path))
+            # Otherwise, serve index.html for React client-side routing
+            index = BUILD_DIR / "index.html"
+            if index.exists():
+                return FileResponse(str(index))
+    except PermissionError:
+        pass
+        
+    return JSONResponse({"detail": "Frontend not built or not accessible"}, status_code=404)

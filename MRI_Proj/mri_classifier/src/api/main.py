@@ -10,7 +10,7 @@ from pathlib import Path
 import logging
 import numpy as np
 import sys
-from typing import Optional
+from typing import Optional, List
 import base64
 # Add current directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -21,6 +21,16 @@ from change_metrics import (
     compute_area_change,
     create_change_visualization
 )
+
+# Database Imports
+from fastapi import Depends, HTTPException
+from sqlalchemy.orm import Session
+from database import engine, get_db
+import models
+import schemas
+
+# Create database tables
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="MRI-Tumour Scanner")
 
@@ -74,6 +84,88 @@ async def root():
 async def health():
     """Health check endpoint for monitoring"""
     return {"status": "healthy", "service": "MRI Tumor Scanner API"}
+
+# ── API ROUTES FOR DATABASE ──────────────────────────────────────────
+
+@app.get("/api/patients", response_model=List[schemas.Patient])
+def read_patients(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    patients = db.query(models.Patient).offset(skip).limit(limit).all()
+    # Add initial mock data if database is empty to aid in prototyping
+    if not patients:
+        import random
+        # Fake patients payload
+        mock_data = [
+            {
+                "patient": models.Patient(id="P93284", name="Sarah Jenkins", age="42", gender="Female", status="Pending Review", statusColor="#f97316", clinicalNotes="Patient presented with mild headaches. First baseline scan complete.", lastScan="15 Oct 2023"),
+                "scans": [
+                    models.ScanHistory(id="s1", patient_id="P93284", date="15 Oct 2023", tumorCount=1, modelConfidence=0.89, url="/dataset/yes/Y1.jpg")
+                ]
+            },
+            {
+                "patient": models.Patient(id="P11029", name="Michael Chang", age="58", gender="Male", status="Cleared", statusColor="var(--success)", clinicalNotes="Routine annual scan. No previous history of neurological issues.", lastScan="12 Nov 2023"),
+                "scans": [
+                    models.ScanHistory(id="s2", patient_id="P11029", date="12 Nov 2023", tumorCount=0, modelConfidence=0.99, url="/dataset/no/N1.jpeg")
+                ]
+            },
+            {
+                "patient": models.Patient(id="P55812", name="Emily Thorne", age="31", gender="Female", status="Scheduled", statusColor="var(--primary)", clinicalNotes="Follow-up requested after recent concussive incident. Monitoring for micro-hemorrhaging.", lastScan="N/A"),
+                "scans": []
+            },
+            {
+                "patient": models.Patient(id="P40991", name="Robert Fischer", age="66", gender="Male", status="Pending Review", statusColor="#f97316", clinicalNotes="History of meningioma. Scan requested to check for recurrence.", lastScan="02 Jan 2024"),
+                "scans": [
+                    models.ScanHistory(id="s3", patient_id="P40991", date="02 Jan 2024", tumorCount=1, modelConfidence=0.92, url="/dataset/yes/Y2.jpg"),
+                    models.ScanHistory(id="s4", patient_id="P40991", date="05 Jun 2023", tumorCount=0, modelConfidence=0.95, url="/dataset/no/N2.jpeg")
+                ]
+            },
+            {
+                "patient": models.Patient(id="P77302", name="Aisha Reynolds", age="25", gender="Female", status="Cleared", statusColor="var(--success)", clinicalNotes="Presented with migraines. MRI shows no abnormalities.", lastScan="28 Feb 2024"),
+                "scans": [
+                    models.ScanHistory(id="s5", patient_id="P77302", date="28 Feb 2024", tumorCount=0, modelConfidence=0.98, url="/dataset/no/N3.jpeg")
+                ]
+            }
+        ]
+
+        for item in mock_data:
+            db.add(item["patient"])
+            for scan in item["scans"]:
+                db.add(scan)
+                
+        db.commit()
+        patients = db.query(models.Patient).offset(skip).limit(limit).all()
+    return patients
+
+@app.post("/api/patients", response_model=schemas.Patient)
+def create_patient(patient: schemas.PatientCreate, db: Session = Depends(get_db)):
+    db_patient = models.Patient(**patient.model_dump())
+    db.add(db_patient)
+    db.commit()
+    db.refresh(db_patient)
+    return db_patient
+
+@app.put("/api/patients/{patient_id}", response_model=schemas.Patient)
+def update_patient(patient_id: str, patient_update: schemas.PatientUpdate, db: Session = Depends(get_db)):
+    db_patient = db.query(models.Patient).filter(models.Patient.id == patient_id).first()
+    if not db_patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    update_data = patient_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_patient, key, value)
+        
+    db.commit()
+    db.refresh(db_patient)
+    return db_patient
+
+@app.post("/api/patients/{patient_id}/scans", response_model=schemas.ScanHistory)
+def create_scan_for_patient(patient_id: str, scan: schemas.ScanHistoryCreate, db: Session = Depends(get_db)):
+    db_scan = models.ScanHistory(**scan.model_dump(), patient_id=patient_id)
+    db.add(db_scan)
+    db.commit()
+    db.refresh(db_scan)
+    return db_scan
+
+# ── END API ROUTES ───────────────────────────────────────────────────
 
 @app.post("/scan")
 async def scan(
@@ -424,3 +516,5 @@ async def serve_frontend(full_path: str):
         pass
         
     return JSONResponse({"detail": "Frontend not built or not accessible"}, status_code=404)
+
+# Force Uvicorn Reload Fix

@@ -10,3 +10,4 @@ opencv-python-headless==4.10.0.84
 python-multipart==0.0.12
 SimpleITK==2.5.3
 aiofiles==23.2.1
+sqlalchemy>=2.0.0

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDLC Modal Sandbox</title>
+    <title>NBA Elo Modal Sandbox</title>
     <!-- Include identical fonts to the main portfolio -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -641,8 +641,8 @@
 
     <div class="mock-card">
 
-        <h2>Allium App</h2>
-        <p>A demonstration of the WDC Project showing the "More Information" modal interaction.</p>
+        <h2>NBA Elo System</h2>
+        <p>A demonstration of the NBA Elo CLI System back-testing and predictions.</p>
         <button class="btn-visit" onclick="openModal()">
             <span>Read Case Study</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -657,7 +657,7 @@
             
             <div class="modal-header">
                 <div class="modal-title-row">
-                    <h2 class="modal-title">Allium: Volunteer Platform</h2>
+                    <h2 class="modal-title">NBA Elo Predictor</h2>
                     <button class="btn-close" onclick="closeModal()" aria-label="Close Modal">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -677,115 +677,88 @@
 
             <div class="modal-body">
                 
-                <!-- 0. INSTRUCTIONS TAB -->
+                                                <!-- 0. INSTRUCTIONS TAB -->
                 <div id="tab-instructions" class="tab-content active">
-                    <h3>Project Instructions &amp; Testing</h3>
-                    <p>This layout serves as the standard instruction template for all projects. It outlines functional testing paths, necessary credentials, and role-based capabilities.</p>
+                    <img src="images/nba-cli-menu.png" alt="NBA Elo CLI Main Menu" class="landscape-image" style="background:#0f172a; padding:10px;">
                     
-                    <h4>Important Logins</h4>
-                    <p>Use these pre-configured demo accounts to explore different permission levels. <em>Note: Passwords are case-sensitive.</em></p>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 24px;">
-                        <div style="background: var(--color-bg); padding: 15px; border-radius: var(--radius-small); border: 1px dashed var(--color-border);">
-                            <strong style="color: var(--color-warning);">Admin Access</strong><br>
-                            User: <code>admin</code><br>
-                            Pass: <code>AdminPassword0</code>
-                        </div>
-                        <div style="background: var(--color-bg); padding: 15px; border-radius: var(--radius-small); border: 1px dashed var(--color-border);">
-                            <strong style="color: var(--color-primary);">Manager Access</strong><br>
-                            User: <code>georgew</code><br>
-                            Pass: <code>password7</code>
-                        </div>
-                    </div>
-
-                    <h4>Testing Setup: NodeMailer</h4>
-                    <p>To successfully test the automated email notification system:</p>
+                    <h3>CLI Navigation &amp; Features</h3>
+                    <p>The system is packaged into a robust Python CLI application. Navigation is hierarchical and menu-driven, separating heavy scraping pipelines from daily prediction tasks.</p>
+                    
+                    <h4>1. Run Historical Backtest</h4>
                     <ul>
-                        <li>Sign up with a valid email address.</li>
-                        <li>Subscribe to an organization.</li>
-                        <li>Post an event or update as a manager for that organization to trigger the email dispatch.</li>
-                        <li><strong>Auth Credentials:</strong> <code>alliumnotifications@gmail.com</code> / <code>WDCwebapp2024@</code></li>
+                        <li>Evaluates model accuracy over an entire past season.</li>
+                        <li>Supports two prediction profiles: <strong>Accuracy Mode</strong> (maximizes raw correct picks) and <strong>Calibrated Mode</strong> (better probability mapping for betting ROI).</li>
                     </ul>
 
-                    <h4>Role-Based Features</h4>
-                    <p>The application enforces authorization across four capability tiers:</p>
+                    <h4>2. Live Predict (Daily Sync)</h4>
                     <ul>
-                        <li><strong>Guest:</strong> Can view organizations and public events, view managers of an organization, and sign up.</li>
-                        <li><strong>User:</strong> Inherits Guest features. Can join/leave organizations, attend events, receive emails from specific organizations on new events/updates, and edit/delete their profile (differing options for Google Users).</li>
-                        <li><strong>Manager:</strong> Inherits User features. If assigned as a manager of an organization by an Admin, they can make events/updates (Public or Member Only), delete and edit them, remove members, and view members attending events.</li>
-                        <li><strong>Admin:</strong> Inherits Manager features. Can edit/delete all users (including role assignments), and create/edit/delete/manage all organizations.</li>
+                        <li>Fetches today's games, official NBA lineups, and real-time OddsPortal data.</li>
+                        <li><strong>Advanced Modeling:</strong> Automatically calculates player minute availability.</li>
+                        <li><strong>Interactive Options:</strong> After generating predictions, users can enter a submenu to <strong>"Set Your Own Odds"</strong> to calculate dynamic implied probabilities and find +EV (Expected Value) betting edges against specific bookmakers.</li>
+                    </ul>
+
+                    <h4>3. Inspect Recent Predictions</h4>
+                    <ul>
+                        <li>Deep-dive into specific games from the most recent run.</li>
+                        <li>View full side-by-side team rosters, individual player Elo ratings, rotation minutes, and the model's rationale (e.g., Home Court Advantage adjustments).</li>
+                    </ul>
+
+                    <h4>4. Run Betting Optimization</h4>
+                    <ul>
+                        <li>Executes an algorithmic parameter sweep across historical seasons (2024-2026).</li>
+                        <li>Finds the most profitable theoretical betting thresholds by identifying optimal discrepancies between model probabilities and bookmaker odds.</li>
                     </ul>
                 </div>
 
                 <!-- 1. OVERVIEW TAB -->
                 <div id="tab-overview" class="tab-content">
-                    <!-- High-Res Mock Landscape Image -->
-                    <img src="images/allium-dashboard.png" alt="Allium App Dashboard" class="landscape-image">
+                    <h3>Project Purpose</h3>
+                    <p>This CLI application holds a back-testing pipeline that turns Basketball-Reference season data into <strong>player-level Elo ratings</strong>, rolls those ratings forward game-by-game, and evaluates how well the model's win-probability predictions match real outcomes.</p>
                     
-                    <h3>Project Definition</h3>
-                    <p>Allium is a volunteer organization management platform built for the COMP SCI 2207/7207 Web &amp; Database Computing course at the University of Adelaide. It bridges the gap between volunteers and organizations through a centralized digital ecosystem for discovering opportunities, managing events, and coordinating community engagement.</p>
-                    
-                    <h4>My Role &amp; Contributions</h4>
-                    <p>As part of a team within UG Group 12, I contributed to both the frontend static page development (Milestone 1) and the full-stack web application (Milestone 2). My work spanned database schema design, Express.js route architecture, session-based authentication, and the integration of Google OAuth for streamlined sign-in.</p>
-
-                    <h4>Key Features</h4>
+                    <h4>Core Questions Addressed</h4>
                     <ul>
-                        <li><strong>Role-Based Access Control:</strong> Four-tier permission system (Guest, User, Manager, Admin) restricting actions based on authenticated session levels.</li>
-                        <li><strong>Organization &amp; Event Management:</strong> Full CRUD operations for organizations, events, and updates with support for public and member-only visibility.</li>
-                        <li><strong>Google OAuth Integration:</strong> Single sign-on via Google using the <code>google-auth-library</code>, with differing profile edit capabilities for Google vs. local users.</li>
-                        <li><strong>NodeMailer Notifications:</strong> Automated email dispatch to subscribers when a manager creates a new event or update within their organization.</li>
-                        <li><strong>Event Attendance Tracking:</strong> Members can indicate attendance on events, and managers can view attendee lists for planning purposes.</li>
+                        <li><em>How do individual player ratings evolve through the season?</em></li>
+                        <li><em>How accurate are our Elo-based game predictions?</em></li>
                     </ul>
 
-                    <h4>User Stories</h4>
-                    <div class="user-story">As a <em>Guest</em>, I want to <em>browse organizations and public events</em>, so that <em>I can discover volunteer opportunities before signing up</em>.</div>
-                    <div class="user-story">As a <em>Registered User</em>, I want to <em>join organizations and RSVP to events</em>, so that <em>I can track my volunteer involvement and receive notifications</em>.</div>
-                    <div class="user-story">As a <em>Manager</em>, I want to <em>create events and post updates for my organization</em>, so that <em>I can coordinate activities and communicate with members</em>.</div>
-                    <div class="user-story">As an <em>Admin</em>, I want to <em>manage all users, organizations, and role assignments</em>, so that <em>I can maintain platform integrity and quality</em>.</div>
-
-                    <h4>Scope &amp; Constraints</h4>
+                    <h4>Key System Outputs</h4>
                     <ul>
-                        <li><strong>Course Deliverables:</strong> Two milestone submissions across a university semester (Static HTML/CSS pages, then full-stack Express.js application).</li>
-                        <li><strong>Team:</strong> Collaborative development within UG Group 12 using GitHub for version control.</li>
-                        <li><strong>Educational Context:</strong> Mock implementation for learning purposes; not intended for production deployment.</li>
+                        <li><strong>Elo Logs:</strong> One row per player per game detailing pre-Elo, minute adjustments, and post-game Elo changes.</li>
+                        <li><strong>Game Predictions:</strong> Pre-game forecasts matched against true game outcomes to compute rolling system accuracy (currently tracking at ~68.1%).</li>
                     </ul>
-                    
+
                     <h4>Tech Stack</h4>
                     <div class="tech-tags">
-                        <span class="tech-tag">Node.js</span>
-                        <span class="tech-tag">Express.js</span>
-                        <span class="tech-tag">MySQL</span>
-                        <span class="tech-tag">Vanilla JS</span>
-                        <span class="tech-tag">Google OAuth</span>
-                        <span class="tech-tag">NodeMailer</span>
-                        <span class="tech-tag">Multer</span>
+                        <span class="tech-tag">Python 3</span>
+                        <span class="tech-tag">BeautifulSoup4</span>
+                        <span class="tech-tag">Playwright</span>
+                        <span class="tech-tag">Pandas</span>
+                        <span class="tech-tag">PyInstaller</span>
+                        <span class="tech-tag">Power BI</span>
                     </div>
                 </div>
 
-                <!-- 2. ARCHITECTURE TAB -->
+                                <!-- 2. ARCHITECTURE TAB -->
                 <div id="tab-architecture" class="tab-content">
                     <div class="arch-diagram">
-                        <div class="arch-node">Client<br><span style="font-size:11px; color:var(--color-text-secondary)">HTML / Vanilla JS</span></div>
+                        <div class="arch-node">Data Scrapers<br><span style="font-size:11px; color:var(--color-text-secondary)">BS4 &amp; Playwright</span></div>
                         <div class="arch-arrow">&#10132;</div>
-                        <div class="arch-node">Server<br><span style="font-size:11px; color:var(--color-text-secondary)">Express.js + Middleware</span></div>
+                        <div class="arch-node">Elo Engine<br><span style="font-size:11px; color:var(--color-text-secondary)">Predict &amp; Update</span></div>
                         <div class="arch-arrow">&#10132;</div>
-                        <div class="arch-node">Database<br><span style="font-size:11px; color:var(--color-text-secondary)">MySQL (mysql2)</span></div>
+                        <div class="arch-node">Outputs<br><span style="font-size:11px; color:var(--color-text-secondary)">CSV &amp; Analysis Dashboards</span></div>
                     </div>
                     
-                    <h3>System Design</h3>
+                    <h3>System Architecture</h3>
                     <ul>
-                        <li><strong>Route Architecture:</strong> Five modular Express routers &mdash; <code>index.js</code> (public routes), <code>users.js</code> (member actions), <code>managers.js</code> (org management), <code>admins.js</code> (platform oversight), and <code>organizations.js</code> (org data retrieval).</li>
-                        <li><strong>Session-Based Auth:</strong> <code>express-session</code> with secure, HTTP-only cookies. Three middleware guards (<code>checkUserSession</code>, <code>checkManagerSession</code>, <code>checkAdminSession</code>) protecting routes based on permission level.</li>
-                        <li><strong>Database Schema:</strong> Seven relational tables &mdash; <code>users</code>, <code>organizations</code>, <code>events</code>, <code>updates</code>, plus three join tables (<code>user_organization</code>, <code>user_event</code>, <code>manager_organization</code>) enforcing referential integrity via Foreign Key constraints.</li>
-                        <li><strong>File Uploads:</strong> <code>Multer</code> middleware handles profile picture and organization image uploads, storing binary data as <code>MEDIUMBLOB</code> in MySQL.</li>
-                        <li><strong>Rate Limiting:</strong> <code>express-slow-down</code> throttles requests after 100 hits per 15-minute window, adding 200ms delays to mitigate abuse.</li>
+                        <li><strong>Data Ingestion:</strong> Automated scraping layers fetch raw Box Scores and Game Ledgers from Basketball-Reference using rotating user-agents and intelligent request delays.</li>
+                        <li><strong>Rating Algorithm:</strong> Individual player seeds are built using advanced metrics (PER, WS, BPM). During live backtesting, these ratings dynamically update based on individual performance and point differential weighting.</li>
+                        <li><strong>Weighting Mechanism:</strong> Before tip-off, win probabilities are constructed by blending team strength based on <em>weighted minutes availability</em>, isolating stars vs. bench rotations.</li>
                     </ul>
 
-                    <h4>Technical Trade-offs</h4>
+                    <h4>Technical Decisions</h4>
                     <ul>
-                        <li><strong>MySQL over NoSQL:</strong> The highly relational nature of Users &harr; Organizations &harr; Events required strict FK constraints and join-table integrity that document stores cannot enforce natively.</li>
-                        <li><strong>Server-Side Rendering over SPA:</strong> Static HTML served from Express with AJAX calls for dynamic data. Avoided React/Vue overhead for a CRUD-heavy app where server-rendered pages kept the architecture simpler.</li>
-                        <li><strong>BLOB Storage over File System:</strong> Profile images stored directly in MySQL as <code>MEDIUMBLOB</code>. Trade-off: simpler deployment (no CDN), but increased database size and query overhead for image retrieval.</li>
-                        <li><strong>Session Cookies over JWT:</strong> Used <code>express-session</code> for server-side state. Trade-off: requires session storage server-side, but provides immediate revocation and simpler CSRF protection.</li>
+                        <li><strong>Python CLI:</strong> Opted for a CLI architecture over a full web-app to focus purely on high-frequency algorithmic accuracy and rapid, daily scraping tasks.</li>
+                        <li><strong>CSV Over SQL:</strong> Due to the standalone nature of the distributed app and single-user requirement, CSV logs provide sufficient performance without requiring a local database SQL daemon.</li>
                     </ul>
                 </div>
 
@@ -822,63 +795,43 @@
                     </div>
                 </div>
 
-                <!-- 4. DEPLOYMENT TAB -->
+                                <!-- 4. DEPLOYMENT TAB -->
                 <div id="tab-deployment" class="tab-content">
                     <div class="pipeline">
                         <div class="pipeline-step">
                             <div class="pipeline-icon success">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                             </div>
-                            <span style="font-size: 13px; font-family: var(--font-primary); font-weight: 500;">GitHub Push</span>
-                        </div>
-                        <div class="pipeline-arrow">&#10132;</div>
-                        <div class="pipeline-step">
-                            <div class="pipeline-icon success">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
-                            </div>
-                            <span style="font-size: 13px; font-family: var(--font-primary); font-weight: 500;">Lint &amp; Validate</span>
+                            <span style="font-size: 13px; font-family: var(--font-primary); font-weight: 500;">Python Code</span>
                         </div>
                         <div class="pipeline-arrow">&#10132;</div>
                         <div class="pipeline-step">
                             <div class="pipeline-icon success">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
                             </div>
-                            <span style="font-size: 13px; font-family: var(--font-primary); font-weight: 500;">Build</span>
+                            <span style="font-size: 13px; font-family: var(--font-primary); font-weight: 500;">PyInstaller</span>
                         </div>
                         <div class="pipeline-arrow">&#10132;</div>
                         <div class="pipeline-step">
                             <div class="pipeline-icon success">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                             </div>
-                            <span style="font-size: 13px; font-family: var(--font-primary); font-weight: 500;">Deploy</span>
+                            <span style="font-size: 13px; font-family: var(--font-primary); font-weight: 500;">Standalone Exe / App</span>
+                        </div>
+                        <div class="pipeline-arrow">&#10132;</div>
+                        <div class="pipeline-step">
+                            <div class="pipeline-icon success">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                            </div>
+                            <span style="font-size: 13px; font-family: var(--font-primary); font-weight: 500;">User Distribution</span>
                         </div>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
-                        <div style="background: var(--color-bg); padding: 18px; border-radius: var(--radius-small); border: 1px solid var(--color-border); text-align: center;">
-                            <h4 style="margin: 0 0 6px 0; font-size: 24px; color: var(--color-primary);">7</h4>
-                            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">Relational Database Tables</p>
-                        </div>
-                        <div style="background: var(--color-bg); padding: 18px; border-radius: var(--radius-small); border: 1px solid var(--color-border); text-align: center;">
-                            <h4 style="margin: 0 0 6px 0; font-size: 24px; color: var(--color-success);">5</h4>
-                            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">Express Route Modules</p>
-                        </div>
-                    </div>
-
-                    <h3>Quality Assurance &amp; Testing</h3>
+                    <h3>Distribution &amp; Portability</h3>
+                    <p>To enable non-developer users to run daily predictions, the entire Python scraping and analytical pipeline is bundled into standalone executables:</p>
                     <ul>
-                        <li><strong>ESLint:</strong> Configured <code>.eslintrc.json</code> enforcing consistent code style and catching common errors across all route files.</li>
-                        <li><strong>HTML Validation:</strong> <code>.htmlvalidate.json</code> rules applied to all static pages to ensure W3C compliance and accessibility standards.</li>
-                        <li><strong>Manual QA:</strong> Walkthroughs simulating Guest, User, Manager, and Admin workflows to verify RBAC enforcement and data integrity before each milestone submission.</li>
-                        <li><strong>Input Sanitization:</strong> Server-side validation using the <code>validator</code> library on all user inputs to prevent XSS and SQL injection vectors.</li>
-                    </ul>
-                    
-                    <h3>Infrastructure &amp; Environment</h3>
-                    <ul>
-                        <li><strong>Dev Environment:</strong> VS Code Dev Containers (<code>.devcontainer.json</code>) ensuring consistent Node.js + MySQL development environments across team members.</li>
-                        <li><strong>Database Setup:</strong> <code>webapp_database.sql</code> dump with schema creation, seed data for 5 organizations, 20 events, 20 updates, and 11 user accounts for testing.</li>
-                        <li><strong>Session Security:</strong> Secure HTTP-only cookies with production HTTPS enforcement, session secrets via environment variables.</li>
-                        <li><strong>Rate Limiting:</strong> <code>express-slow-down</code> protecting all routes against brute-force and automated abuse.</li>
+                        <li><strong>Windows &amp; Mac Builds:</strong> Uses <code>build_dist.py</code> and <code>build_dist_mac.py</code> wrappers around PyInstaller to package Python, Pandas, and Playwright browsers seamlessly.</li>
+                        <li><strong>Zero-Config Operation:</strong> The output is a single folder containting the environment, allowing users to simply run a <code>.command</code> or <code>.bat</code> file without needing <code>pip install</code> or Python in their system PATH.</li>
                     </ul>
                 </div>
 
@@ -919,61 +872,44 @@
         // ============================
         // MULTI-SPRINT DATA & LOGIC
         // ============================
-        const sprintData = {
+                const sprintData = {
             1: {
-                goal: { title: 'Sprint 1 \u2014 Static Pages & Schema Design (Milestone 1)', desc: 'Build all static HTML/CSS/JS page prototypes and plan the relational database schema.' },
-                todo: [
-                    { id: 'ALM-06', tag: 'Planning', tagColor: 'primary', text: 'Document design justifications for all page layouts and interactions.' },
-                ],
-                progress: [
-                    { id: 'ALM-04', tag: 'Frontend', tagColor: 'primary', text: 'Build Organization listing and detail pages with CSS grid layout.' },
-                    { id: 'ALM-05', tag: 'Database', tagColor: 'success', text: 'Design normalized MySQL schema with ER diagram for all entities.' },
-                ],
+                goal: { title: 'Sprint 1 — Core Algo & Scraping Pipeline', desc: 'Build HTML scrapers to parse Basketball-Reference game logs & implement baseline Elo logic.' },
+                todo: [],
+                progress: [],
                 done: [
-                    { id: 'ALM-01', tag: 'Frontend', tagColor: 'primary', text: 'Create landing page with organization card grid and search functionality.' },
-                    { id: 'ALM-02', tag: 'Frontend', tagColor: 'primary', text: 'Build sign-in and sign-up pages with form validation.' },
-                    { id: 'ALM-03', tag: 'Frontend', tagColor: 'primary', text: 'Develop edit profile and admin dashboard page shells.' },
+                    { id: 'ELO-01', tag: 'Data', tagColor: 'primary', text: 'Scrape full season Box Scores' },
+                    { id: 'ELO-02', tag: 'Data', tagColor: 'primary', text: 'Extract individual player seeds' },
+                    { id: 'ELO-03', tag: 'Algo', tagColor: 'warning', text: 'Implement player minute adjustments' },
+                    { id: 'ELO-04', tag: 'Algo', tagColor: 'warning', text: 'Generate historic backtesting outputs' }
                 ],
-                retro: null,
-                points: { todo: 2, progress: 5, done: 9 }
+                retro: { well: "Scraping logic proved extremely resistant to rate limiting.", learned: "Playwright is needed for dynamic pages, BS4 alone isn't enough." },
+                points: { todo: 0, progress: 0, done: 14 }
             },
             2: {
-                goal: { title: 'Sprint 2 \u2014 Backend & Authentication (Milestone 2a)', desc: 'Set up Express.js server, MySQL integration, session-based auth, and Google OAuth.' },
-                todo: [
-                    { id: 'ALM-14', tag: 'Backend', tagColor: 'warning', text: 'Implement Manager routes for event/update CRUD with org-level authorization.' },
-                ],
-                progress: [
-                    { id: 'ALM-11', tag: 'Backend', tagColor: 'warning', text: 'Build User routes for joining orgs, RSVP attendance, and profile editing.' },
-                    { id: 'ALM-12', tag: 'Full-Stack', tagColor: 'primary', text: 'Wire frontend AJAX calls to Express API endpoints.' },
-                ],
+                goal: { title: 'Sprint 2 — Live Daily Game Predictions', desc: 'Construct the logic that pulls current-day lineups to execute the pre-game probability engine.' },
+                todo: [],
+                progress: [],
                 done: [
-                    { id: 'ALM-04', tag: 'Frontend', tagColor: 'primary', text: 'Finalize Organization pages with dynamic data rendering from API.' },
-                    { id: 'ALM-05', tag: 'Database', tagColor: 'success', text: 'Deploy MySQL schema with 7 tables, FK constraints, and seed data.' },
-                    { id: 'ALM-08', tag: 'Backend', tagColor: 'warning', text: 'Configure Express server with session middleware and route structure.' },
-                    { id: 'ALM-09', tag: 'Backend', tagColor: 'warning', text: 'Implement sign-in/sign-up with username/password and Google OAuth.' },
-                    { id: 'ALM-10', tag: 'Backend', tagColor: 'warning', text: 'Create RBAC middleware guards for User, Manager, and Admin tiers.' },
+                    { id: 'ELO-05', tag: 'Data', tagColor: 'primary', text: 'Write fetch_today.py to scrape daily schedules' },
+                    { id: 'ELO-06', tag: 'Algo', tagColor: 'warning', text: 'Weight algorithm by tiered minutes availability' },
+                    { id: 'ELO-07', tag: 'CLI', tagColor: 'success', text: 'Format ASCII table outputs for readability' },
+                    { id: 'ELO-08', tag: 'Script', tagColor: 'success', text: 'Chain incremental daily updates (update_live_elos.py)' }
                 ],
-                retro: null,
-                points: { todo: 5, progress: 8, done: 18 }
+                retro: { well: "Daily scripts chain securely without resetting Elo baselines.", learned: "Finding reliable pre-tipoff lineup data is harder than expected." },
+                points: { todo: 0, progress: 0, done: 18 }
             },
             3: {
-                goal: { title: 'Sprint 3 \u2014 Features, Email & Polish (Milestone 2b)', desc: 'Complete all CRUD operations, integrate NodeMailer notifications, implement file uploads, and finalize for submission.' },
-                todo: [
-                    { id: 'ALM-22', tag: 'Testing', tagColor: 'muted', text: 'Final QA walkthrough across all 4 user roles before submission.' },
-                ],
-                progress: [
-                    { id: 'ALM-19', tag: 'Backend', tagColor: 'warning', text: 'Integrate NodeMailer for automated event/update email notifications.' },
-                    { id: 'ALM-20', tag: 'Backend', tagColor: 'warning', text: 'Implement Multer file upload for profile pictures and org images.' },
-                ],
+                goal: { title: 'Sprint 3 — Distribution & Packaging', desc: 'Package complex Python dependencies (Pandas, BS4) into a robust, clickable standalone package using PyInstaller.' },
+                todo: [],
+                progress: [],
                 done: [
-                    { id: 'ALM-14', tag: 'Backend', tagColor: 'warning', text: 'Complete Manager routes: create/edit/delete events and updates.' },
-                    { id: 'ALM-15', tag: 'Backend', tagColor: 'warning', text: 'Build Admin routes: user management, org CRUD, role assignments.' },
-                    { id: 'ALM-11', tag: 'Full-Stack', tagColor: 'primary', text: 'Finalize User flows: join/leave orgs, toggle event attendance.' },
-                    { id: 'ALM-16', tag: 'Backend', tagColor: 'warning', text: 'Add express-slow-down rate limiting and input validation.' },
-                    { id: 'ALM-12', tag: 'Frontend', tagColor: 'primary', text: 'Connect all frontend forms and interactions to backend API.' },
+                    { id: 'ELO-09', tag: 'Dist', tagColor: 'muted', text: 'Develop build_dist.py for Windows EXE' },
+                    { id: 'ELO-10', tag: 'Dist', tagColor: 'muted', text: 'Develop build_dist_mac.py with .command runners' },
+                    { id: 'ELO-11', tag: 'Doc', tagColor: 'muted', text: 'Write Game Day instruction manual' }
                 ],
-                retro: null,
-                points: { todo: 3, progress: 8, done: 21 }
+                retro: { well: "Successfully bundled Playwright browsers seamlessly inside Mac distribution targets.", learned: "PyInstaller requires careful inclusion hints for hidden dynamic imports." },
+                points: { todo: 0, progress: 0, done: 8 }
             }
         };
 

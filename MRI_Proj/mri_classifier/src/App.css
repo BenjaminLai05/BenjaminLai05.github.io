@@ -381,6 +381,13 @@ body {
   object-fit: contain;
 }
 
+.scaled-mri {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
 .confidence-controls {
   margin-top: 16px;
   display: flex;
@@ -526,3 +533,37 @@ body {
   from { transform: translateY(100%); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   DRAG & DROP HIGHLIGHT
+   ═══════════════════════════════════════════════════════ */
+.image-viewer-area.drag-over {
+  outline: 3px dashed var(--primary);
+  outline-offset: -4px;
+  background-color: rgba(14, 165, 233, 0.08);
+}
+
+.image-viewer-area.drag-over .upload-placeholder {
+  color: var(--primary);
+}
+
+/* ═══════════════════════════════════════════════════════
+   IMAGE ZOOM & PAN
+   ═══════════════════════════════════════════════════════ */
+.zoomable-image {
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+}
+.zoomable-image:hover {
+  transform: scale(1.08);
+}
+.zoomable-image:active {
+  cursor: grabbing;
+  transform: scale(1.3);
+}
+
+/* ═══════════════════════════════════════════════════════
+   TOAST TYPES
+   ═══════════════════════════════════════════════════════ */
+.toast--warning { border-left: 4px solid var(--warning); }
+.toast--info { border-left: 4px solid var(--primary); }

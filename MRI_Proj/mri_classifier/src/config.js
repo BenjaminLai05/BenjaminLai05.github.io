@@ -1,7 +1,10 @@
 // API Configuration
-// In production, set REACT_APP_API_URL to your Render API URL
-// In development, use localhost:8000 (default)
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// In production (Docker), REACT_APP_API_URL is set to "" so the frontend
+// uses relative URLs (same origin). In local dev, it defaults to localhost.
+const API_BASE_URL =
+  typeof process.env.REACT_APP_API_URL === 'string'
+    ? process.env.REACT_APP_API_URL   // "" in production → relative URLs
+    : 'http://localhost:8000';         // undefined in dev → localhost
 
 export default API_BASE_URL;
 

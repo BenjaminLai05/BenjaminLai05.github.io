@@ -11,6 +11,7 @@ import logging
 import numpy as np
 import sys
 from typing import Optional, List
+from contextlib import asynccontextmanager
 import base64
 # Add current directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -25,14 +26,135 @@ from change_metrics import (
 # Database Imports
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import engine, get_db
+from database import engine, get_db, SessionLocal
 import models
 import schemas
 
-# Create database tables
+# Create database tables on startup
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="MRI-Tumour Scanner")
+MOCK_PATIENTS = [
+    {
+        "patient": {"id": "P93284", "name": "Sarah Jenkins", "age": "42", "gender": "Female", "status": "Pending Review", "statusColor": "#f97316", "clinicalNotes": "Patient presented with mild headaches. First baseline scan complete.", "lastScan": "15 Oct 2023"},
+        "scans": [{"id": "s1", "patient_id": "P93284", "date": "15 Oct 2023", "tumorCount": 1, "modelConfidence": 0.89, "url": "/dataset/yes/Y1.jpg"}]
+    },
+    {
+        "patient": {"id": "P11029", "name": "Michael Chang", "age": "58", "gender": "Male", "status": "Completed", "statusColor": "var(--success)", "clinicalNotes": "Routine annual scan. No previous history of neurological issues. Review complete.", "lastScan": "12 Nov 2023"},
+        "scans": [{"id": "s2", "patient_id": "P11029", "date": "12 Nov 2023", "tumorCount": 0, "modelConfidence": 0.99, "url": "/dataset/no/N1.jpeg"}]
+    },
+    {
+        "patient": {"id": "P55812", "name": "Emily Thorne", "age": "31", "gender": "Female", "status": "Scheduled", "statusColor": "var(--primary)", "clinicalNotes": "Follow-up requested after recent concussive incident. Monitoring for micro-hemorrhaging.", "lastScan": "N/A"},
+        "scans": []
+    },
+    {
+        "patient": {"id": "P40991", "name": "Robert Fischer", "age": "66", "gender": "Male", "status": "In progress", "statusColor": "#3b82f6", "clinicalNotes": "History of meningioma. Scan requested to check for recurrence. Currently undergoing analysis.", "lastScan": "02 Jan 2024"},
+        "scans": [
+            {"id": "s3", "patient_id": "P40991", "date": "02 Jan 2024", "tumorCount": 1, "modelConfidence": 0.92, "url": "/dataset/yes/Y2.jpg"},
+            {"id": "s4", "patient_id": "P40991", "date": "05 Jun 2023", "tumorCount": 0, "modelConfidence": 0.95, "url": "/dataset/no/N2.jpeg"}
+        ]
+    },
+    {
+        "patient": {"id": "P77302", "name": "Aisha Reynolds", "age": "25", "gender": "Female", "status": "Routine Check", "statusColor": "#8b5cf6", "clinicalNotes": "Presented with migraines. Scheduled for standard routine check. MRI shows no abnormalities initially.", "lastScan": "28 Feb 2024"},
+        "scans": [{"id": "s5", "patient_id": "P77302", "date": "28 Feb 2024", "tumorCount": 0, "modelConfidence": 0.98, "url": "/dataset/no/N3.jpg"}]
+    },
+    {
+        "patient": {"id": "P60492", "name": "David O'Connor", "age": "45", "gender": "Male", "status": "Pending Review", "statusColor": "#f97316", "clinicalNotes": "Patient arrived with persistent dizziness. Monitoring required.", "lastScan": "15 Mar 2024"},
+        "scans": [
+            {"id": "s6", "patient_id": "P60492", "date": "15 Mar 2024", "tumorCount": 2, "modelConfidence": 0.94, "url": "/dataset/yes/Y100.JPG"},
+            {"id": "s11", "patient_id": "P60492", "date": "01 Mar 2024", "tumorCount": 1, "modelConfidence": 0.91, "url": "/dataset/yes/Y51.jpg"}
+        ]
+    },
+    {
+        "patient": {"id": "P81923", "name": "Chloe Bennett", "age": "29", "gender": "Female", "status": "Completed", "statusColor": "var(--success)", "clinicalNotes": "Routine clearance scan for a prior sports injury.", "lastScan": "01 Dec 2023"},
+        "scans": [
+            {"id": "s7", "patient_id": "P81923", "date": "01 Dec 2023", "tumorCount": 0, "modelConfidence": 0.97, "url": "/dataset/no/N20.jpg"},
+            {"id": "s13", "patient_id": "P81923", "date": "01 Nov 2023", "tumorCount": 0, "modelConfidence": 0.99, "url": "/dataset/no/N18.jpg"}
+        ]
+    },
+    {
+        "patient": {"id": "P30214", "name": "Marcus Vance", "age": "52", "gender": "Male", "status": "In progress", "statusColor": "#3b82f6", "clinicalNotes": "Investigating suspected structural anomalies. Scanning currently underway.", "lastScan": "10 Feb 2024"},
+        "scans": [
+            {"id": "s8", "patient_id": "P30214", "date": "10 Feb 2024", "tumorCount": 1, "modelConfidence": 0.88, "url": "/dataset/yes/Y8.jpg"},
+            {"id": "s10", "patient_id": "P30214", "date": "01 Jan 2024", "tumorCount": 0, "modelConfidence": 0.99, "url": "/dataset/no/N10.jpg"}
+        ]
+    },
+    {
+        "patient": {"id": "P90333", "name": "Olivia Shaw", "age": "38", "gender": "Female", "status": "Scheduled", "statusColor": "var(--primary)", "clinicalNotes": "Scheduled for recurring migraine check-up.", "lastScan": "N/A"},
+        "scans": []
+    },
+    {
+        "patient": {"id": "P41122", "name": "James Harper", "age": "61", "gender": "Male", "status": "Routine Check", "statusColor": "#8b5cf6", "clinicalNotes": "Regular bi-annual check for past micro-hemorrhaging history.", "lastScan": "20 Nov 2023"},
+        "scans": [
+            {"id": "s9", "patient_id": "P41122", "date": "20 Nov 2023", "tumorCount": 0, "modelConfidence": 0.99, "url": "/dataset/no/N40.jpg"},
+            {"id": "s12", "patient_id": "P41122", "date": "01 Oct 2023", "tumorCount": 0, "modelConfidence": 0.98, "url": "/dataset/no/N15.jpg"}
+        ]
+    },
+    {
+        "patient": {"id": "P19283", "name": "William Davies", "age": "47", "gender": "Male", "status": "Completed", "statusColor": "var(--success)", "clinicalNotes": "Post-operative follow-up scanning complete. Showing stable conditions.", "lastScan": "18 Jan 2024"},
+        "scans": [
+            {"id": "s14", "patient_id": "P19283", "date": "18 Jan 2024", "tumorCount": 0, "modelConfidence": 0.98, "url": "/dataset/no/N11.jpg"},
+            {"id": "s15", "patient_id": "P19283", "date": "20 Dec 2023", "tumorCount": 0, "modelConfidence": 0.99, "url": "/dataset/no/N12.jpg"}
+        ]
+    },
+    {
+        "patient": {"id": "P83921", "name": "Sophia Martinez", "age": "34", "gender": "Female", "status": "In progress", "statusColor": "#3b82f6", "clinicalNotes": "Patient undergoing contrast-enhanced MRI to evaluate right temporal lobe anomaly seen in previous scan.", "lastScan": "04 Mar 2024"},
+        "scans": [
+            {"id": "s16", "patient_id": "P83921", "date": "04 Mar 2024", "tumorCount": 1, "modelConfidence": 0.91, "url": "/dataset/yes/Y12.jpg"},
+            {"id": "s17", "patient_id": "P83921", "date": "10 Feb 2024", "tumorCount": 1, "modelConfidence": 0.87, "url": "/dataset/yes/Y14.jpg"}
+        ]
+    },
+    {
+        "patient": {"id": "P72194", "name": "Liam Zhang", "age": "62", "gender": "Male", "status": "Pending Review", "statusColor": "#f97316", "clinicalNotes": "Recent scan shows potential new lesion. Awaiting conclusive review from senior radiologist.", "lastScan": "22 Mar 2024"},
+        "scans": [
+            {"id": "s18", "patient_id": "P72194", "date": "22 Mar 2024", "tumorCount": 2, "modelConfidence": 0.93, "url": "/dataset/yes/Y16.JPG"},
+            {"id": "s19", "patient_id": "P72194", "date": "10 Oct 2023", "tumorCount": 1, "modelConfidence": 0.86, "url": "/dataset/yes/Y15.jpg"},
+            {"id": "s20", "patient_id": "P72194", "date": "15 Jan 2023", "tumorCount": 0, "modelConfidence": 0.97, "url": "/dataset/no/N13.jpg"}
+        ]
+    },
+    {
+        "patient": {"id": "P63728", "name": "Emma Wilson", "age": "28", "gender": "Female", "status": "Scheduled", "statusColor": "var(--primary)", "clinicalNotes": "Scheduled for baseline routine neuroimaging due to family history of cerebral conditions.", "lastScan": "N/A"},
+        "scans": []
+    },
+    {
+        "patient": {"id": "P29481", "name": "Noah Sullivan", "age": "55", "gender": "Male", "status": "Routine Check", "statusColor": "#8b5cf6", "clinicalNotes": "Standard annual review for patient with previous benign cyst removal.", "lastScan": "05 Jan 2024"},
+        "scans": [
+            {"id": "s21", "patient_id": "P29481", "date": "05 Jan 2024", "tumorCount": 0, "modelConfidence": 0.99, "url": "/dataset/no/N15.jpg"},
+            {"id": "s22", "patient_id": "P29481", "date": "05 Jan 2023", "tumorCount": 0, "modelConfidence": 0.99, "url": "/dataset/no/N14.jpg"}
+        ]
+    }
+]
+
+def seed_database():
+    """Seed the database with mock patient data if it is empty. Called at startup."""
+    db = SessionLocal()
+    try:
+        count = db.query(models.Patient).count()
+        if count == 0:
+            log_startup = logging.getLogger("uvicorn")
+            log_startup.info("🌱 Database is empty — seeding with %d mock patients...", len(MOCK_PATIENTS))
+            for item in MOCK_PATIENTS:
+                p_data = item["patient"]
+                patient = models.Patient(**p_data)
+                db.add(patient)
+                for s_data in item["scans"]:
+                    scan = models.ScanHistory(**s_data)
+                    db.add(scan)
+            db.commit()
+            log_startup.info("✅ Database seeded successfully.")
+    except Exception as e:
+        db.rollback()
+        logging.getLogger("uvicorn").error("❌ Failed to seed database: %s", str(e))
+    finally:
+        db.close()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: seed the database before accepting requests
+    seed_database()
+    yield
+    # Shutdown (nothing to clean up)
+
+app = FastAPI(title="MRI-Tumour Scanner", lifespan=lifespan)
 
 # Add CORS middleware to allow frontend requests
 app.add_middleware(
@@ -90,50 +212,8 @@ async def health():
 @app.get("/api/patients", response_model=List[schemas.Patient])
 def read_patients(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     patients = db.query(models.Patient).offset(skip).limit(limit).all()
-    # Add initial mock data if database is empty to aid in prototyping
-    if not patients:
-        import random
-        # Fake patients payload
-        mock_data = [
-            {
-                "patient": models.Patient(id="P93284", name="Sarah Jenkins", age="42", gender="Female", status="Pending Review", statusColor="#f97316", clinicalNotes="Patient presented with mild headaches. First baseline scan complete.", lastScan="15 Oct 2023"),
-                "scans": [
-                    models.ScanHistory(id="s1", patient_id="P93284", date="15 Oct 2023", tumorCount=1, modelConfidence=0.89, url="/dataset/yes/Y1.jpg")
-                ]
-            },
-            {
-                "patient": models.Patient(id="P11029", name="Michael Chang", age="58", gender="Male", status="Cleared", statusColor="var(--success)", clinicalNotes="Routine annual scan. No previous history of neurological issues.", lastScan="12 Nov 2023"),
-                "scans": [
-                    models.ScanHistory(id="s2", patient_id="P11029", date="12 Nov 2023", tumorCount=0, modelConfidence=0.99, url="/dataset/no/N1.jpeg")
-                ]
-            },
-            {
-                "patient": models.Patient(id="P55812", name="Emily Thorne", age="31", gender="Female", status="Scheduled", statusColor="var(--primary)", clinicalNotes="Follow-up requested after recent concussive incident. Monitoring for micro-hemorrhaging.", lastScan="N/A"),
-                "scans": []
-            },
-            {
-                "patient": models.Patient(id="P40991", name="Robert Fischer", age="66", gender="Male", status="Pending Review", statusColor="#f97316", clinicalNotes="History of meningioma. Scan requested to check for recurrence.", lastScan="02 Jan 2024"),
-                "scans": [
-                    models.ScanHistory(id="s3", patient_id="P40991", date="02 Jan 2024", tumorCount=1, modelConfidence=0.92, url="/dataset/yes/Y2.jpg"),
-                    models.ScanHistory(id="s4", patient_id="P40991", date="05 Jun 2023", tumorCount=0, modelConfidence=0.95, url="/dataset/no/N2.jpeg")
-                ]
-            },
-            {
-                "patient": models.Patient(id="P77302", name="Aisha Reynolds", age="25", gender="Female", status="Cleared", statusColor="var(--success)", clinicalNotes="Presented with migraines. MRI shows no abnormalities.", lastScan="28 Feb 2024"),
-                "scans": [
-                    models.ScanHistory(id="s5", patient_id="P77302", date="28 Feb 2024", tumorCount=0, modelConfidence=0.98, url="/dataset/no/N3.jpeg")
-                ]
-            }
-        ]
-
-        for item in mock_data:
-            db.add(item["patient"])
-            for scan in item["scans"]:
-                db.add(scan)
-                
-        db.commit()
-        patients = db.query(models.Patient).offset(skip).limit(limit).all()
     return patients
+
 
 @app.post("/api/patients", response_model=schemas.Patient)
 def create_patient(patient: schemas.PatientCreate, db: Session = Depends(get_db)):

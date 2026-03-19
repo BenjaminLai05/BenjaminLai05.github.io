@@ -8,7 +8,7 @@ export default function SettingsView({ isDarkMode, setIsDarkMode }) {
   const handleDownloadDataset = () => {
     // In a real app this would point to a static file or API endpoint
     const link = document.createElement('a');
-    link.href = 'https://github.com/BenjaminLai05/BenjaminLai05.github.io/raw/main/MRI_Proj/exemplar_dataset.zip';
+    link.href = 'https://github.com/BenjaminLai05/BenjaminLai05.github.io/releases/download/1.0/exemplar_dataset.zip';
     link.download = 'exemplar_dataset.zip';
     document.body.appendChild(link);
     link.click();

@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 import { usePatients } from '../context/PatientContext';
 
+const STATUS_STYLES = {
+  'Completed':     { color: '#10b981', backgroundColor: '#d1fae5' },
+  'In Progress':   { color: '#6366f1', backgroundColor: '#e0e7ff' },
+  'Pending Review':{ color: '#f97316', backgroundColor: '#ffedd5' },
+  'Scheduled':     { color: '#3b82f6', backgroundColor: '#dbeafe' },
+  'Routine Check': { color: '#8b5cf6', backgroundColor: '#ede9fe' },
+};
+
+function getStatusStyle(status) {
+  return STATUS_STYLES[status] || { color: '#64748b', backgroundColor: '#f1f5f9' };
+}
+
 export default function PatientsView({ onPatientSelect }) {
   const { patients, addNewPatient } = usePatients();
   
@@ -68,12 +80,12 @@ export default function PatientsView({ onPatientSelect }) {
       <div className="card" style={{ flex: 1, padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-hover)', color: 'var(--text-muted)', fontSize: '13px', textTransform: 'uppercase' }}>
-              <th style={{ padding: '16px 24px' }}>Name</th>
-              <th style={{ padding: '16px 24px' }}>Patient ID</th>
-              <th style={{ padding: '16px 24px' }}>Age</th>
-              <th style={{ padding: '16px 24px' }}>Last Scan</th>
-              <th style={{ padding: '16px 24px' }}>Status</th>
+            <tr style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-hover)', color: 'var(--text-muted)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <th style={{ padding: '16px 24px', width: '25%', fontWeight: 600 }}>Name</th>
+              <th style={{ padding: '16px 24px', width: '20%', fontWeight: 600 }}>Patient ID</th>
+              <th style={{ padding: '16px 24px', width: '15%', fontWeight: 600 }}>Age</th>
+              <th style={{ padding: '16px 24px', width: '20%', fontWeight: 600 }}>Last Scan</th>
+              <th style={{ padding: '16px 24px', width: '20%', fontWeight: 600 }}>Status</th>
             </tr>
           </thead>
         </table>
@@ -87,12 +99,12 @@ export default function PatientsView({ onPatientSelect }) {
                   <tr key={p.id} onClick={() => onPatientSelect(p.id)} style={{ borderBottom: '1px solid var(--border-color)', cursor: 'pointer', transition: 'background 0.15s' }}
                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-hover)'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                    <td style={{ padding: '16px 24px', fontWeight: 600 }}>{p.name}</td>
-                    <td style={{ padding: '16px 24px', color: 'var(--text-muted)' }}>{p.id}</td>
-                    <td style={{ padding: '16px 24px' }}>{p.age}</td>
-                    <td style={{ padding: '16px 24px' }}>{p.lastScan}</td>
-                    <td style={{ padding: '16px 24px' }}>
-                      <span style={{ padding: '4px 12px', borderRadius: '12px', fontSize: '12px', fontWeight: 600, backgroundColor: `${p.statusColor}20`, color: p.statusColor }}>
+                    <td style={{ padding: '16px 24px', fontWeight: 600, width: '25%', color: 'var(--text-main)', fontSize: '14px' }}>{p.name}</td>
+                    <td style={{ padding: '16px 24px', color: 'var(--text-muted)', width: '20%', fontSize: '14px' }}>{p.id}</td>
+                    <td style={{ padding: '16px 24px', width: '15%', fontSize: '14px' }}>{p.age}</td>
+                    <td style={{ padding: '16px 24px', width: '20%', fontSize: '14px' }}>{p.lastScan}</td>
+                    <td style={{ padding: '16px 24px', width: '20%' }}>
+                      <span style={{ display: 'inline-flex', padding: '6px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap', ...getStatusStyle(p.status) }}>
                         {p.status}
                       </span>
                     </td>

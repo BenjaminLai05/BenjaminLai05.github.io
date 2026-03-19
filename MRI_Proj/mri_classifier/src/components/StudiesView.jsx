@@ -177,6 +177,37 @@ export default function StudiesView({ patientId }) {
                 </div>
               )}
             </div>
+
+            {/* Feature: Confidence Delta */}
+            <div className="metric-card">
+              <div className="label">Max AI Confidence</div>
+              <div className="value">
+                {metrics ? `${Math.round(Math.max(...metrics.moving_scan.tumors.map(t => t.confidence), 0) * 100)}%` : '--'}
+              </div>
+              {metrics && metrics.moving_scan.tumors.length > 0 && metrics.fixed_scan.tumors.length > 0 && (
+                <div className="sub-value" style={{ color: 'var(--text-muted)' }}>
+                  {(() => {
+                    const maxM = Math.max(...metrics.moving_scan.tumors.map(t => t.confidence));
+                    const maxF = Math.max(...metrics.fixed_scan.tumors.map(t => t.confidence));
+                    const diff = ((maxM - maxF) * 100).toFixed(1);
+                    return diff > 0 ? `▲ +${diff}%` : `▼ ${diff}%`;
+                  })()} vs baseline
+                </div>
+              )}
+            </div>
+
+            {/* Feature: Clinical Recommendation */}
+            <div className="metric-card" style={{ backgroundColor: 'var(--bg-hover)', border: 'none' }}>
+              <div className="label">AI Recommendation</div>
+              <div className="value" style={{ fontSize: '13px', whiteSpace: 'normal', lineHeight: 1.5, marginTop: '4px', fontWeight: 500, color: metrics && metrics.comparison.area_percent_change > 0 ? 'var(--danger)' : 'var(--text-primary)' }}>
+                {!metrics ? '--' : 
+                 metrics.comparison.area_percent_change > 0 || metrics.comparison.tumor_count_change > 0
+                   ? "Clinical deterioration detected. Refer to specialist for immediate neurological review."
+                   : metrics.moving_scan.num_tumors === 0
+                     ? "No lesions detected. Continue standard monitoring protocol."
+                     : "Stable or improving lesion criteria. Schedule standard follow-up scan."}
+              </div>
+            </div>
           </div>
 
           {metrics && (

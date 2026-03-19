@@ -13,6 +13,7 @@ class ScanHistoryCreate(ScanHistoryBase):
 
 class ScanHistory(ScanHistoryBase):
     class Config:
+        orm_mode = True
         from_attributes = True
 
 class PatientBase(BaseModel):
@@ -41,4 +42,5 @@ class Patient(PatientBase):
     history: List[ScanHistory] = []
 
     class Config:
+        orm_mode = True
         from_attributes = True

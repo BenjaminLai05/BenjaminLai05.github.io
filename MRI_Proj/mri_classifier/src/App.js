@@ -313,7 +313,7 @@ export default function App() {
         userName: user.name,
         userId: user.id,
       }, ...prev]);
-      setNotifications(prev => [{ id: Date.now(), text: `Welcome back, ${user.name}!`, type: 'success', time: new Date().toLocaleTimeString() }, ...prev]);
+      setNotifications(prev => [{ id: Date.now(), text: `Welcome back, ${user.name}!`, type: 'success', time: new Date().toLocaleTimeString(), isAdminOnly: user.role === 'Admin' }, ...prev]);
     }} />;
   }
 
@@ -418,14 +418,18 @@ export default function App() {
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
               <button className="theme-toggle" style={{ position: 'relative', border: 'none', background: 'transparent', cursor: 'pointer', padding: '8px', display: 'flex' }} onClick={() => setShowNotifPanel(!showNotifPanel)}>
                 <Icons.Bell style={{ width: '22px', height: '22px', color: 'var(--text-main)' }} />
-                {notifications.length > 0 && (
+                {notifications.filter(n => isAdmin ? true : !n.isAdminOnly).length > 0 && (
                   <span style={{
                     position: 'absolute', top: '2px', right: '4px',
                     width: '16px', height: '16px', borderRadius: '50%',
                     backgroundColor: 'var(--danger)', color: '#fff', fontSize: '10px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold',
                     border: '2px solid var(--bg-app)'
-                  }}>{notifications.length > 9 ? '9+' : notifications.length}</span>
+                  }}>
+                    {notifications.filter(n => isAdmin ? true : !n.isAdminOnly).length > 9 
+                      ? '9+' 
+                      : notifications.filter(n => isAdmin ? true : !n.isAdminOnly).length}
+                  </span>
                 )}
               </button>
 
@@ -443,14 +447,14 @@ export default function App() {
                     </span>
                     <button className="btn-secondary" style={{ padding: '4px 10px', fontSize: '11px' }} onClick={() => setNotifications([])}>Clear All</button>
                   </div>
-                  {notifications.length === 0 ? (
+                  {notifications.filter(n => isAdmin ? true : !n.isAdminOnly).length === 0 ? (
                     <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>All caught up!</div>
-                  ) : notifications.slice(0, 10).map(n => (
+                  ) : notifications.filter(n => isAdmin ? true : !n.isAdminOnly).slice(0, 10).map(n => (
                     <div key={n.id} style={{ padding: '10px 16px', borderBottom: '1px solid var(--border-color)', fontSize: '13px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <span style={{ fontWeight: 500 }}>{n.text}</span>
                       </div>
-                      <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>{n.time}</div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '4px 0 0 0' }}>{n.time} {n.isAdminOnly ? '(Admin Only)' : ''}</div>
                     </div>
                   ))}
                 </div>

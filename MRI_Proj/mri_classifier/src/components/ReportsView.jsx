@@ -1,15 +1,56 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { usePatients } from '../context/PatientContext';
 
 export default function ReportsView({ patientId }) {
   const { patients } = usePatients();
   const patient = patients.find(p => p.id === patientId);
   const reportRef = useRef(null);
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [clinicalHistory, setClinicalHistory] = useState("");
+  const [aiSummary, setAiSummary] = useState("");
+  const [impressionLines, setImpressionLines] = useState([]);
 
-  // Get the most recent scan for the report
-  const latestScan = patient?.history?.[0] || null;
-  const previousScan = patient?.history?.[1] || null;
-  const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  // Assuming latestScan and previousScan are derived from patient data or props
+  // For this example, let's mock them if not provided, or assume they come from context/props
+  // This part needs to be correctly implemented based on how latestScan/previousScan are obtained.
+  // For now, let's assume they are available in the scope or derived from patient.history
+  const latestScan = patient?.history?.[0]; // Example: latest scan is the first in history
+  const previousScan = patient?.history?.[1]; // Example: previous scan is the second in history
+  const today = new Date().toLocaleDateString();
+
+  const confidencePercent = latestScan?.modelConfidence ? Math.round(latestScan.modelConfidence * 100) : 0;
+  const confidenceLabel = confidencePercent >= 90 ? 'High Accuracy' : confidencePercent >= 70 ? 'Moderate Accuracy' : 'Low Confidence';
+
+  // Initialize editable fields when patient/scan loads
+  useEffect(() => {
+    if (patient && latestScan) {
+
+      setClinicalHistory(
+        previousScan 
+          ? `Follow-up scan for patient ${patient.name}. Previous scan date: ${previousScan.date}. This report compares the latest scan (${latestScan.date}) against prior imaging.`
+          : `Initial scan for patient ${patient.name}. This report documents baseline AI analysis findings from the scan performed on ${latestScan.date}.`
+      );
+      
+      setAiSummary(
+        latestScan.tumorCount === 0
+          ? 'No suspicious lesions or tumors were identified by the AI detection model. The scan appears within normal limits. Clinical correlation is recommended.'
+          : `The AI detection model identified ${latestScan.tumorCount} potential lesion(s) in the submitted MRI scan. The model's highest detection confidence was ${confidencePercent}%. All findings should be reviewed and correlated clinically by a qualified radiologist.`
+      );
+
+      const impressions = latestScan.tumorCount === 0 ? [
+        'No abnormal masses or enhancing lesions detected.',
+        'Ventricular system appears normal in size and morphology.',
+        'No evidence of midline shift or mass effect.'
+      ] : [
+        `Total lesion candidates detected: ${latestScan.tumorCount}`,
+        `Model confidence score: ${confidencePercent}% (${confidenceLabel})`,
+        ...(previousScan ? [`Previous scan (${previousScan.date}) documented ${previousScan.tumorCount} lesion(s). Clinical comparison recommended.`] : []),
+        'All AI findings are preliminary and require radiologist confirmation.'
+      ];
+      setImpressionLines(impressions);
+    }
+  }, [patient, latestScan, previousScan, confidencePercent, confidenceLabel]);
 
   const handlePrint = () => {
     const printContents = reportRef.current?.innerHTML;
@@ -65,17 +106,17 @@ export default function ReportsView({ patientId }) {
     );
   }
 
-  const confidencePercent = latestScan.modelConfidence ? Math.round(latestScan.modelConfidence * 100) : 0;
-  const confidenceLabel = confidencePercent >= 90 ? 'High Accuracy' : confidencePercent >= 70 ? 'Moderate Accuracy' : 'Low Confidence';
-
   return (
     <div className="reports-view" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBottom: '40px' }}>
       
       <div style={{ width: '100%', maxWidth: '900px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <h2 style={{ margin: 0 }}>Medical Analysis Report</h2>
         <div style={{ display: 'flex', gap: '12px' }}>
-          <button className="btn-primary" onClick={handlePrint}>Download PDF</button>
-          <button className="btn-secondary" onClick={handlePrint}>Print</button>
+          <button className={isEditing ? "btn-primary" : "btn-secondary"} onClick={() => setIsEditing(!isEditing)}>
+            {isEditing ? "Save Edits" : "Edit Report"}
+          </button>
+          <button className="btn-primary" onClick={handlePrint} disabled={isEditing}>Download PDF</button>
+          <button className="btn-secondary" onClick={handlePrint} disabled={isEditing}>Print</button>
         </div>
       </div>
 
@@ -89,20 +130,26 @@ export default function ReportsView({ patientId }) {
         </div>
 
         <h3 style={{ fontSize: '16px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '8px' }}>Clinical History</h3>
-        <p style={{ marginTop: 0, marginBottom: '24px', lineHeight: 1.6 }}>
-          {previousScan 
-            ? `Follow-up scan for patient ${patient.name}. Previous scan date: ${previousScan.date}. This report compares the latest scan (${latestScan.date}) against prior imaging.`
-            : `Initial scan for patient ${patient.name}. This report documents baseline AI analysis findings from the scan performed on ${latestScan.date}.`
-          }
-        </p>
+        {isEditing ? (
+          <textarea 
+            value={clinicalHistory} 
+            onChange={e => setClinicalHistory(e.target.value)} 
+            style={{ width: '100%', padding: '12px', marginBottom: '24px', fontFamily: 'inherit', fontSize: '15px', lineHeight: 1.6, border: '1px solid #d1d5db', borderRadius: '6px', minHeight: '80px', resize: 'vertical' }}
+          />
+        ) : (
+          <p style={{ marginTop: 0, marginBottom: '24px', lineHeight: 1.6 }}>{clinicalHistory}</p>
+        )}
 
         <h3 style={{ fontSize: '16px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '8px' }}>AI Summary Findings</h3>
-        <p style={{ marginTop: 0, marginBottom: '24px', lineHeight: 1.6 }}>
-          {latestScan.tumorCount === 0
-            ? 'No suspicious lesions or tumors were identified by the AI detection model. The scan appears within normal limits. Clinical correlation is recommended.'
-            : `The AI detection model identified ${latestScan.tumorCount} potential lesion(s) in the submitted MRI scan. The model's highest detection confidence was ${confidencePercent}%. All findings should be reviewed and correlated clinically by a qualified radiologist.`
-          }
-        </p>
+        {isEditing ? (
+          <textarea 
+            value={aiSummary} 
+            onChange={e => setAiSummary(e.target.value)} 
+            style={{ width: '100%', padding: '12px', marginBottom: '24px', fontFamily: 'inherit', fontSize: '15px', lineHeight: 1.6, border: '1px solid #d1d5db', borderRadius: '6px', minHeight: '80px', resize: 'vertical' }}
+          />
+        ) : (
+          <p style={{ marginTop: 0, marginBottom: '24px', lineHeight: 1.6 }}>{aiSummary}</p>
+        )}
 
         <div style={{ display: 'flex', gap: '24px', marginBottom: '32px' }}>
           {/* Scan Thumbnail */}
@@ -130,22 +177,31 @@ export default function ReportsView({ patientId }) {
         </div>
 
         <h3 style={{ fontSize: '16px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '8px' }}>Detailed Impression</h3>
-        <ul style={{ paddingLeft: '24px', lineHeight: 1.6, marginBottom: '32px' }}>
-          {latestScan.tumorCount === 0 ? (
-            <>
-              <li>No abnormal masses or enhancing lesions detected.</li>
-              <li>Ventricular system appears normal in size and morphology.</li>
-              <li>No evidence of midline shift or mass effect.</li>
-            </>
-          ) : (
-            <>
-              <li>Total lesion candidates detected: <strong>{latestScan.tumorCount}</strong></li>
-              <li>Model confidence score: <strong>{confidencePercent}%</strong> ({confidenceLabel})</li>
-              {previousScan && <li>Previous scan ({previousScan.date}) documented {previousScan.tumorCount} lesion(s). Clinical comparison recommended.</li>}
-              <li>All AI findings are preliminary and require radiologist confirmation.</li>
-            </>
-          )}
-        </ul>
+        {isEditing ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '32px' }}>
+            {impressionLines.map((line, idx) => (
+              <div key={idx} style={{ display: 'flex', gap: '8px' }}>
+                <span style={{ paddingTop: '8px' }}>•</span>
+                <input 
+                  type="text" 
+                  value={line} 
+                  onChange={e => {
+                    const newLines = [...impressionLines];
+                    newLines[idx] = e.target.value;
+                    setImpressionLines(newLines);
+                  }}
+                  style={{ flex: 1, padding: '8px 12px', fontFamily: 'inherit', fontSize: '15px', border: '1px solid #d1d5db', borderRadius: '6px' }}
+                />
+                <button onClick={() => setImpressionLines(impressionLines.filter((_, i) => i !== idx))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', fontSize: '18px' }}>&times;</button>
+              </div>
+            ))}
+            <button onClick={() => setImpressionLines([...impressionLines, 'New finding...'])} style={{ alignSelf: 'flex-start', background: 'none', border: 'none', color: '#3b82f6', fontWeight: 600, cursor: 'pointer', padding: '4px 0' }}>+ Add line</button>
+          </div>
+        ) : (
+          <ul style={{ paddingLeft: '24px', lineHeight: 1.6, marginBottom: '32px' }}>
+            {impressionLines.map((line, idx) => <li key={idx} dangerouslySetInnerHTML={{ __html: line }} />)}
+          </ul>
+        )}
 
         {/* Scan History Summary Table */}
         {patient.history.length > 1 && (

@@ -1,0 +1,15 @@
+# Virtual Environments
+MRI_Proj/mri_classifier/myenv/
+env/
+venv/
+.env
+
+# Python compilation files
+**/*.pyc
+__pycache__/
+
+# Node modules
+node_modules/
+
+# OS-specific
+.DS_Store
